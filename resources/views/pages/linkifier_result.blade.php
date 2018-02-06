@@ -280,7 +280,7 @@
     //   TODO: GG result ng samuel
         var Samuel = [];
         var start_time = new Date().getTime();
-        $.ajax("http://192.168.1.38:63342/samuel_init?KEY=YOUR_API_KEY", {
+        $.ajax("http://192.168.1.14:63342/samuel_init?KEY=YOUR_API_KEY", {
             success: function(data) {
                 console.log("{{$creator['title']}}");console.log("{{$corpus}}");
                 Samuel = data;
@@ -293,7 +293,7 @@
                     'verbose': true
                 };
                 $.ajax({
-                    url: "http://192.168.1.38:63342/samuel_api",
+                    url: "http://192.168.1.14:63342/samuel_api",
                     type: 'POST',
                     data: JSON.stringify(data),
                     contentType:"application/json",

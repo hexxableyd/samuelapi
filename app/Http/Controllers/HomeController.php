@@ -23,6 +23,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $data=array();
+        $data['active_nav']="#dashboard";
+        $data['page_title']="DASHBOARD";
+        return view('home',$data);
     }
 }
