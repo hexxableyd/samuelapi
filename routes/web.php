@@ -44,13 +44,16 @@ Route::get('/linkifier/result', 'LinkifierController@linkifyRes');
 Route::resource('linkifier', 'LinkifierController');
 
 
-// API KEY CRUD
+// API KEY CRUD ROUTES
 Route::get('/api_key/gen_api_key', 'APIKeyController@gen_api_key')->name('gen_api_key');
 Route::post('/api_key/create_api_key', 'APIKeyController@create_api_key')->name('create_api_key');
 Route::get('/api_key/show_api_keys', 'APIKeyController@show_api_keys')->name('show_api_keys');
 Route::post('/api_key/get_api_key', 'APIKeyController@get_api_key')->name('get_api_key');
 Route::post('/api_key/update_api_key', 'APIKeyController@update_api_key')->name('update_api_key');
 Route::post('/api_key/delete_api_key', 'APIKeyController@delete_api_key')->name('delete_api_key');
+
+// SAMUEL CORE VALIDATIONS ROUTES
+Route::get('/validate_key', 'ValidateKey@index');
 
 //ROUTES TO DO
 //ABOUT PAGE "/about"
