@@ -13,6 +13,8 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <script src="{{ asset('js/app.js') }}"></script>
+    
 </head>
 <body>
     <div id="app">
@@ -31,7 +33,7 @@
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Samuel API') }}
+                        <strong>SAMUEL API</strong>
                     </a>
                 </div>
 
@@ -65,7 +67,7 @@
                         </button>
                         <div class="brand-name-wrapper">
                             <a class="navbar-brand" href="{{ url('/') }}">
-                                {{ config('app.name', 'Samuel API') }}
+                                <strong>SAMUEL API</strong>
                             </a>
                         </div>
                     </div>
@@ -114,7 +116,8 @@
     </div>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    
+    
     @auth
     <script type='text/javascript'>
         $("{{ $active_nav }}").addClass("active")
