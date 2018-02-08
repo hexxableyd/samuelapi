@@ -36,7 +36,9 @@ class HomeController extends Controller
         $request_remaining = RequestRemaining::where('user_id',Auth::user()->id)->first();
         $Keys = API_Key::where('user_id', '=', Auth::user()->id)->get();
         $keys = array(array("Key","No of Requests"));
+        $total_requests = 0;
         foreach ($Keys as $key) {
+            $total_requests += $key['requests'];
             array_push($keys,array(
                 $key['name'],
                 $key['requests']
@@ -46,7 +48,8 @@ class HomeController extends Controller
         return response()->json([
             'request_remaining'=> $request_remaining->requests,
             'maximum_request' => 100000,
-            'keys' => $keys
+            'keys' => $keys,
+            'total_requests' => $total_requests
             ]);
     }
 }

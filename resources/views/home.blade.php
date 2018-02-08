@@ -4,11 +4,38 @@
 
 <div class="row">
     <div class="col-md-12">
+        <h4 id="realtime_status">Realtime: Off</h4>
+        <label class="switch">
+            <input id="realtime" type="checkbox">
+            <span class="slider round"></span>
+        </label>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4>Request Remaining</h4>
+                <h4>Requests</h4>
             </div>
-            <div id="chart_div" class="panel-body">
+            <div class="panel-body">
+                <div class="row">
+                    <div id="chart_div" class="col-md-6">
+                
+                    </div>
+                    <div class="col-md-6">
+                        <table class='table table-condensed'>
+                            <tr>
+                                <td>Requests Remaining</td>
+                                <td id="requests_remaining"></td>
+                            </tr>
+                            <tr>
+                                <td>Total Request</td>
+                                <td id="total_requests"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -27,7 +54,21 @@
 </div>
 
 <script type='text/javascript'>
+    
     fetchdata()
+    var interval;
+    $('#realtime').change(function() {
+        if ($('#realtime').is(':checked')) {
+            $("#realtime_status").text("Realtime: On")
+            interval = setInterval(fetchdata,1000);
+        }else{
+            $("#realtime_status").text("Realtime: Off")
+            fetchdata()
+            clearInterval(interval);
+        }      
+    });
+
+    
 
     function fetchdata(){
         $.ajax({
@@ -35,12 +76,14 @@
          success: function(data){
             setRequestMeter(data.request_remaining,data.maximum_request);
             setApiKeys(data.keys); 
+            $("#total_requests").text(data.total_requests)
+            $("#requests_remaining").text(data.request_remaining)
          }
         });
        }
        
        $(document).ready(function(){
-        setInterval(fetchdata,1000);
+        
        });
 
        google.charts.load('current', {'packages':['gauge']});
