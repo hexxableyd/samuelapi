@@ -52,6 +52,8 @@ Route::post('/api_key/get_api_key', 'APIKeyController@get_api_key')->name('get_a
 Route::post('/api_key/update_api_key', 'APIKeyController@update_api_key')->name('update_api_key');
 Route::post('/api_key/delete_api_key', 'APIKeyController@delete_api_key')->name('delete_api_key');
 
+Route::get('/home/fetch_data', 'HomeController@fetch_data')->name('fetch_data');
+
 // SAMUEL CORE VALIDATIONS ROUTES
 Route::get('/validate_key', 'ValidateKey@index');
 

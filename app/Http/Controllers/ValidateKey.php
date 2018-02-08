@@ -15,6 +15,7 @@ class ValidateKey extends Controller
             $request_remaining = RequestRemaining::where('user_id',$api_key->user_id)->first();
             if($request_remaining->requests > 0){
                 RequestRemaining::find($request_remaining->id)->decrement('requests');
+                API_Key::find($api_key->id)->increment('requests');
                 $valid=true;
             }
         }
