@@ -124,6 +124,9 @@
                                     </div>
                                     <div class="box-body" style="white-space: pre-line">
                                         <h3>{{$creator['title']}}</h3>
+                                        @if(!empty($creator['img-url']))
+                                            <img class="img-responsive pad" src="{{$creator['img-url']}}" alt="Photo">
+                                        @endif
                                         <p>{{$creator['content']}}</p>
                                         <span class="pull-right text-muted">{{$creator['upvote']}} likes - {{count($replies)}} comments</span>
                                     </div>
@@ -279,12 +282,16 @@
 
     //   TODO: GG result ng samuel
         var Samuel = [];
+        {{--var corpus = [];--}}
+        {{--@foreach($corpus as $object)--}}
+                {{--corpus.push("{{$object}}");--}}
+        {{--@endforeach--}}
         var start_time = new Date().getTime();
         $.ajax("http://192.168.1.38:63342/samuel_init?KEY=YOUR_API_KEY", {
             success: function(data) {
-                console.log("{{$creator['title']}}");console.log("{{$corpus}}");
                 Samuel = data;
                 data = {
+                    // 'text':corpus,
                     'text':"{{$corpus}}",
                     'summary_length':8,
                     'visualize': true,
@@ -317,7 +324,7 @@
                         var varpositive = parseInt(samuel.percentage.positive.replace(/\D/g,''))/10.0;
                         var varnegative = parseInt(samuel.percentage.negative.replace(/\D/g,''))/10.0;
                         // TODO: SA NGAYON WALA PANG NEUTRAL
-                        var varneutral = parseInt(samuel.percentage.neutral.replace(/\D/g,''))/10.0;
+                        // var varneutral = parseInt(samuel.percentage.neutral.replace(/\D/g,''))/10.0;
                         var donut = new Morris.Donut({
                             element: 'sales-chart',
                             resize: true,

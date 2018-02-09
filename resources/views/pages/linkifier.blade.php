@@ -226,19 +226,20 @@
                                 $("#err-msg").text(data.errors);
                             }
                         }else {
-                            console.log(data.object);
+                            // console.log(data.object);
                             hideAll();
                             $('#success-div').show("fast","swing");
                             $('#success-msg').text(data.message);
                             if(data.website === 'reddit')
                             {
-                                var reddit_data = {
+                                var link_data = {
                                     type: 'reddit',
                                     author: data.creator,
                                     replies: data.replies
                                 };
-                                console.log(reddit_data);
-                                $('#url-data').val(JSON.stringify(reddit_data));
+                                // console.log(link_data);
+                                console.log(data);
+                                $('#url-data').val(JSON.stringify(link_data));
                                 $("#success-img").attr("src","{{asset('/img/ico/reddit.svg')}}");
                             }
                             author = data.creator;
