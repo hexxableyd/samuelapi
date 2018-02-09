@@ -99,7 +99,7 @@
         <div class="content-wrapper">
             <section class="content-header">
                 <h1>
-                    <img class="img-sm" src="{{asset('/img/ico/reddit.svg')}}" alt="Reddit.com">
+                    <img class="img-sm" src="{{asset($creator['icon'])}}" alt="Reddit.com">
                     <small>{{$creator['permalink']}}</small>
                 </h1>
             </section>
@@ -287,7 +287,7 @@
                 {{--corpus.push("{{$object}}");--}}
         {{--@endforeach--}}
         var start_time = new Date().getTime();
-        $.ajax("http://192.168.1.38:63342/samuel_init?KEY=YOUR_API_KEY", {
+        $.ajax("http://192.168.1.36:63342/samuel_init?KEY=0mbIjzCz1JFkhEeDpkDNYTHgYzmJyogbbpOU1rqc", {
             success: function(data) {
                 Samuel = data;
                 data = {
@@ -295,12 +295,10 @@
                     'text':"{{$corpus}}",
                     'summary_length':8,
                     'visualize': true,
-                    'query': "{{$creator['title']}}",
-                    'KEY':Samuel.KEY,
                     'verbose': true
                 };
                 $.ajax({
-                    url: "http://192.168.1.38:63342/samuel_api",
+                    url: "http://192.168.1.36:63342/samuel_api?KEY=0mbIjzCz1JFkhEeDpkDNYTHgYzmJyogbbpOU1rqc",
                     type: 'POST',
                     data: JSON.stringify(data),
                     contentType:"application/json",

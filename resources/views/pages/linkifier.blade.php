@@ -230,17 +230,29 @@
                             hideAll();
                             $('#success-div').show("fast","swing");
                             $('#success-msg').text(data.message);
+                            console.log(data);
+                            var link_data = [];
                             if(data.website === 'reddit')
                             {
-                                var link_data = {
+                                link_data = {
                                     type: 'reddit',
                                     author: data.creator,
                                     replies: data.replies
                                 };
                                 // console.log(link_data);
-                                console.log(data);
                                 $('#url-data').val(JSON.stringify(link_data));
                                 $("#success-img").attr("src","{{asset('/img/ico/reddit.svg')}}");
+                            }
+                            else if(data.website === 'youtube')
+                            {
+                                link_data = {
+                                    type: 'youtube',
+                                    author: data.creator,
+                                    replies: data.replies
+                                };
+                                // console.log(link_data);
+                                $('#url-data').val(JSON.stringify(link_data));
+                                $("#success-img").attr("src","{{asset('/img/ico/youtube.png')}}");
                             }
                             author = data.creator;
                             replies = data.replies;

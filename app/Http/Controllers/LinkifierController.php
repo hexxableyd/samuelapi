@@ -77,7 +77,7 @@ class LinkifierController extends Controller
             );
             $corpus = "";
 //            $corpus = array();
-            if($data['type'] === 'reddit')
+            if($data['type'] === 'reddit' || $data['type'] === 'youtube')
             {
                 $crawl = new Crawl();
                 foreach($json_object['replies'] as $reps)
@@ -86,14 +86,14 @@ class LinkifierController extends Controller
 //                    array_push($corpus, $crawl->remNL($reps['content']));
                 }
 
-                $reddit_data = array(
+                $sum_data = array(
                     'creator' => $json_object['author'],
                     'replies' => $json_object['replies'],
                     'corpus' => $crawl->remNL($corpus),
 //                    'corpus' => $corpus,
                 );
 
-                $data = array_merge($data, $reddit_data);
+                $data = array_merge($data, $sum_data);
                 return view('pages.linkifier_result')->with($data);
             }
         }

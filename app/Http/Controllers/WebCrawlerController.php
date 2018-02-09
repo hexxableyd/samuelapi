@@ -22,6 +22,7 @@ class WebCrawlerController extends Controller
                         $date->setTimestamp($reddit_creator[0]->data->created);
                         $web['creator'] = array(
                             'theme' => 'skin-red',
+                            'icon' =>'/img/ico/reddit.svg',
                             'title' => $this->regStr($reddit_creator[0]->data->title),
                             'content' => $this->regStr($reddit_creator[0]->data->selftext),
                             'author' => $this->regStr($reddit_creator[0]->data->author),
@@ -35,6 +36,32 @@ class WebCrawlerController extends Controller
                             $web['creator']['img-url'] = $reddit_creator[0]->data->preview->images[0]->source->url;
                         }
                         $web['replies'] = $this->getRepliesReddit($web['object'][1]);
+                    }
+                    else
+                    {
+                        $web['success'] = FALSE;
+                        $web['errors'] = $json['errors'];
+                    }
+                    break;
+                case 'youtube':
+                    $vidID = explode("?v=",$web['link']);
+                    $json = $this->getObjectYoutube($vidID[1]);
+                    if($json['success'])
+                    {
+                        $video_comments = json_decode($json['object-comments']);
+                        $video_creator = json_decode($json['object-creator']);
+                        $web['creator'] = array(
+                            'theme' => 'skin-red',
+                            'icon' => '/img/ico/youtube.png',
+                            'title' => $this->regStr($video_creator->items[0]->snippet->title),
+                            'content' => $this->regStr($video_creator->items[0]->snippet->description),
+                            'author' => $this->regStr($video_creator->items[0]->snippet->channelTitle),
+                            'author-link' => 'https://www.youtube.com/channel/'.$video_creator->items[0]->snippet->channelId,
+                            'permalink' => $link,
+                            'upvote' => "N/A",
+                            'date' =>  date('Y-m-d', strtotime($video_creator->items[0]->snippet->publishedAt))
+                        );
+                        $web['replies'] = $this->getRepliesYoutube($video_comments);
                     }
                     else
                     {
@@ -71,6 +98,11 @@ class WebCrawlerController extends Controller
             $result['message'] = "Your link is a Reddit Link!";
             $result['website'] = "reddit";
         }
+        else if((strpos(strtoupper(parse_url($result['link'], PHP_URL_HOST)),"YOUTUBE")!=FALSE)) {
+            $result['success'] = TRUE;
+            $result['message'] = "Your link is a YouTube Link!";
+            $result['website'] = "youtube";
+        }
         else{
             $result['success'] = FALSE;
             $result['errors'] = 'It seems like '.parse_url($result['link'], PHP_URL_HOST)." is not supported yet! :(";
@@ -79,6 +111,8 @@ class WebCrawlerController extends Controller
 
         return $result;
     }
+
+    // REDDIT FUNCTIONS
     public function getObjectReddit($link)
     {
         // TODO: LOG ERRORS, ON DB, THROWN ALONG WITH THE LINK THAT CAUSED THE ERROR
@@ -105,7 +139,7 @@ class WebCrawlerController extends Controller
         $replies = array();
         foreach($reddit_replies as $rep)
         {
-            if ($rep->kind === 't1')
+            if ($rep->kind === 't1' && $rep->data->body !== "[deleted]")
             {
                 $date = new \DateTime();
                 $date->setTimestamp($rep->data->created);
@@ -123,6 +157,47 @@ class WebCrawlerController extends Controller
         }
         return $replies;
     }
+
+    // YOUTUBE FUNCTIONS
+    public function getObjectYoutube($videoid)
+    {
+        // TODO: LOG ERRORS, ON DB, THROWN ALONG WITH THE LINK THAT CAUSED THE ERROR
+        $apikey = "AIzaSyBFactY2wGBHiSQBh4pjw1Im2uuXx3Qoaw";
+        $result = array();
+        try{
+            $result['success'] = TRUE;
+            $result['object-comments'] = file_get_contents("https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=".$videoid."&key=".$apikey);
+            $result['object-creator'] = file_get_contents("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" . $videoid . "&key=" . $apikey);
+        }
+        catch (\RuntimeException $e){
+            $result['success'] = FALSE;
+            $result['errors'] = "Don't worry, it just seems like there's some error.\nERROR CODE: Runtime Error";
+        }
+        catch (\Exception $e){
+            $result['success'] = FALSE;
+            $result['errors'] = "Don't worry, it just seems like there's some error.\nERROR CODE: Exception Error";
+//            $result['errors'] = "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=".$videoid."key=".$apikey;
+        }
+        finally{
+            return $result;
+        }
+    }
+    public function getRepliesYoutube($object)
+    {
+        $reddit_replies = $object->items;
+        $replies = array();
+        foreach($reddit_replies as $rep)
+        {
+            $reply = $rep->snippet->topLevelComment->snippet;
+            array_push($replies, array(
+                'content' => $this->regStr($reply->textOriginal),
+                'author' => $this->regStr($reply->authorDisplayName),
+                'date' => date('Y-m-d', strtotime($reply->updatedAt))
+            ));
+        }
+        return $replies;
+    }
+
 
     public function regStr($string)
     {
