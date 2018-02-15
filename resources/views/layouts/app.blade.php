@@ -13,6 +13,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     
@@ -34,7 +35,7 @@
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        <strong>SAMUEL API</strong>
+                        <strong>{{ config('app.name','Samuel API') }}</strong>
                     </a>
                 </div>
 
@@ -77,9 +78,10 @@
                     <ul class="nav navbar-nav">
                         <li id='dashboard'><a href="{{ route('home') }}"><i class="fas fa-tachometer-alt"></i>&nbsp;&nbsp; Dashboard</a></li>
                         <li id='apikey'><a href="{{ route('api_key') }}"><i class="fas fa-key"></i>&nbsp;&nbsp; API Key</a></li>
+                        <li id='documentation'><a href="{{ route('documentation') }}"><i class="fas fa-book"></i>&nbsp;&nbsp; Documentation</a></li>
                         <li class="panel panel-default account" id="dropdown">
                             <a data-toggle="collapse" href="#dropdown-lvl1">
-                                <span class="glyphicon glyphicon-user"></span> {{ Auth::user()->name }}<span class="caret"></span>
+                                <i class="fas fa-user"></i>&nbsp;&nbsp; {{ Auth::user()->name }}<span class="caret"></span>
                             </a>
                             <div id="dropdown-lvl1" class="panel-collapse collapse">
                                 <div class="panel-body">

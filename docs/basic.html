@@ -1,0 +1,42 @@
+
+<!-- Containers for the results -->
+<div id="Conclusion"></div>
+<div id="Polarity"></div>
+<div id="Dashboard"></div>
+
+<!-- Include JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+	// Set the data
+	var text = "Concatinate all the text data here."
+	data = {
+		'text': text,
+		'summary_length': 8,
+		'visualize': true,
+	};
+
+	// Post request to SAMUEL API Core
+	$.ajax({
+		url: "http://192.168.1.14:63342/samuel_api?KEY=YOUR_API_KEY",
+		type: 'POST',
+		data: JSON.stringify(data),
+		contentType:"application/json",
+		success:function(samuel) {
+			// Display the results
+			$("#Conclusion").text(samuel.summarized_text);
+			
+			if (samuel.polarity=="positive") {
+				$("#Polarity").text(samuel.percentage.positive+" Positive")
+			}
+			else if(samuel.polarity=="negative"){
+				$("#Polarity").text(samuel.percentage.negative+" Positive")
+			}
+			else{
+				$("#Polarity").text(samuel.percentage.neutral+" Positive")
+			}
+
+			$("#dashboard").html(samuel.dashboard);
+		}
+	});
+</script>

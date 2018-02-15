@@ -327,20 +327,17 @@
                 {{--corpus.push("{{$object}}");--}}
         {{--@endforeach--}}
         var start_time = new Date().getTime();
-        $.ajax("http://192.168.43.233:63342/samuel_init?KEY=0mbIjzCz1JFkhEeDpkDNYTHgYzmJyogbbpOU1rqc", {
+        $.ajax("http://192.168.1.14:63342/samuel_init?KEY=0mbIjzCz1JFkhEeDpkDNYTHgYzmJyogbbpOU1rqc", {
             success: function(data) {
                 Samuel = data;
                 data = {
-                    // 'text':corpus,
                     'text':"{{$corpus}}",
-{{--                    'query':"{{$creator['title']}}",--}}
                     'summary_length':8,
                     'visualize': true,
-                    'verbose': true,
                     'dashboard_style': false
                 };
                 $.ajax({
-                    url: "http://192.168.43.233" +
+                    url: "http://192.168.1.14" +
                     ":63342/samuel_api?KEY=0mbIjzCz1JFkhEeDpkDNYTHgYzmJyogbbpOU1rqc",
                     type: 'POST',
                     data: JSON.stringify(data),

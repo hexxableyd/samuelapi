@@ -49,6 +49,7 @@ Route::post('tweet', ['as'=>'post.tweet','uses'=>'TwitterController@tweet']);
 //TODO: ROUTES
 //ABOUT PAGE "/about"
 //DOCUMENTATION PAGE "/documentation"
+Route::get('/documentation', 'DocumentationController@index')->name('documentation');
 //DEMO PAGE "/demo"
 //YUNG 1 link shit
 

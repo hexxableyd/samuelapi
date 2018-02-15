@@ -15,6 +15,7 @@ return [
 
     'name' => env('APP_NAME', 'Samuel API'),
     'author' => env('APP_AUTHOR','HorcruxPanda'),
+    'samuel_core' => env('SAMUEL_CORE'),
 
     /*
     |--------------------------------------------------------------------------
