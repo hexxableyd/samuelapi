@@ -53,6 +53,12 @@
         #corpus-dashboard {
             height: 1590px !important;
         }
+        .easyPaginateNav a {padding:5px; font-size: large;}
+        .easyPaginateNav a.current {font-weight:bold;text-decoration:underline;}
+
+        #creatorContent{
+            padding: 0 10% 0 10%;
+        }
     </style>
 @endsection
 
@@ -99,8 +105,8 @@
         <div class="content-wrapper">
             <section class="content-header">
                 <h1>
-                    <img class="img-sm" src="{{asset($creator['icon'])}}" alt="Reddit.com">
-                    <small>{{$creator['permalink']}}</small>
+                    <img class="img-sm" src="{{asset($creator['icon'])}}" alt="[[{{$type}} Icon]]">
+                    <small><a href="{{$url_link}}">{{$creator['permalink']}}</a></small>
                 </h1>
             </section>
             <section class="content">
@@ -127,22 +133,28 @@
                                         @if(!empty($creator['img-url']))
                                             <img class="img-responsive pad" src="{{$creator['img-url']}}" alt="Photo">
                                         @endif
-                                        <p>{{$creator['content']}}</p>
+                                        @if($type === 'youtube')
+                                            <object data="http://www.youtube.com/embed/{{$creator['embed']}}"
+                                                    style="height: 315pt; width: 100%;"></object>
+                                            <button id="showButton" type="button" class="btn btn-lg btn-default" onclick="showDescription()">Show Description</button>
+                                            <br>
+                                        @endif
+                                        <p id="creatorContent">{{$creator['content']}}</p>
                                         <span class="pull-right text-muted">{{$creator['upvote']}} likes - {{count($replies)}} comments</span>
                                     </div>
                                     <div>
-                                        <div class="box-footer box-comments" id="paginate">
+                                        <div class="box-footer box-comments" id="easyPaginate">
                                             @foreach($replies as $reply)
-                                                <div class="box-comment">
+                                                <section class="box-comment">
                                                     <img class="img-circle img-sm" src="{{asset('/img/ico/user.png')}}" alt="User Image">
                                                     <div class="comment-text">
-                                                <span class="username">
-                                                    {{$reply['author']}}
-                                                    <span class="text-muted pull-right">{{$reply['date']}}</span>
-                                                </span>
+                                                        <span class="username">
+                                                            {{$reply['author']}}
+                                                            <span class="text-muted pull-right">{{$reply['date']}}</span>
+                                                        </span>
                                                         {{$reply['content']}}
                                                     </div>
-                                                </div>
+                                                </section>
                                             @endforeach
                                         </div>
                                     </div>
@@ -266,19 +278,47 @@
 @section('js')
     <script src="{{asset('/bower_components/raphael/raphael.min.js')}}"></script>
     <script src="{{asset('/bower_components/morris.js/morris.min.js')}}"></script>
+    <script src="{{asset('/js/jquery.easyPaginate.js')}}"></script>
     <script>
-        {{--TODO:PAGINATE PUTANGINA !!!!!--}}
-        $(document).ready(function(){
+        $(function(){
             $('#box-polarity').boxWidget('toggle');
             $('#box-dashboard').boxWidget('toggle');
             $('#box-summary').boxWidget('toggle');
-        //     $('#paginate').pajinate({
-        //         items_per_page : 5,
-        //         item_container_id : '.alt_content',
-        //         nav_panel_id : '.alt_page_navigation'
-        //
-        //     });
+            var count = parseInt({{count($replies)}})/10;
+            if( count < 10 )
+            {
+                count = 10;
+            }
+            else if( count > 30)
+            {
+                count /= 2;
+            }
+            // count = 10 ? count < 100 : count;
+            $('#easyPaginate').easyPaginate({
+                paginateElement: 'section',
+                elementsPerPage: count,
+                effect: 'default'
+            });
         });
+
+        @if($type === 'youtube')
+            var showCounter = false;
+            showDescription();
+            function showDescription(){
+                if(showCounter)
+                {
+                    $("#creatorContent").show();
+                    $("#showButton").text('Hide Description');
+                    showCounter = false;
+                }
+                else
+                {
+                    $("#creatorContent").hide();
+                    $("#showButton").text('Show Description');
+                    showCounter = true;
+                }
+            }
+        @endif
 
     //   TODO: GG result ng samuel
         var Samuel = [];
@@ -287,18 +327,21 @@
                 {{--corpus.push("{{$object}}");--}}
         {{--@endforeach--}}
         var start_time = new Date().getTime();
-        $.ajax("http://192.168.1.36:63342/samuel_init?KEY=0mbIjzCz1JFkhEeDpkDNYTHgYzmJyogbbpOU1rqc", {
+        $.ajax("http://192.168.43.233:63342/samuel_init?KEY=0mbIjzCz1JFkhEeDpkDNYTHgYzmJyogbbpOU1rqc", {
             success: function(data) {
                 Samuel = data;
                 data = {
                     // 'text':corpus,
                     'text':"{{$corpus}}",
+{{--                    'query':"{{$creator['title']}}",--}}
                     'summary_length':8,
                     'visualize': true,
-                    'verbose': true
+                    'verbose': true,
+                    'dashboard_style': false
                 };
                 $.ajax({
-                    url: "http://192.168.1.36:63342/samuel_api?KEY=0mbIjzCz1JFkhEeDpkDNYTHgYzmJyogbbpOU1rqc",
+                    url: "http://192.168.43.233" +
+                    ":63342/samuel_api?KEY=0mbIjzCz1JFkhEeDpkDNYTHgYzmJyogbbpOU1rqc",
                     type: 'POST',
                     data: JSON.stringify(data),
                     contentType:"application/json",
@@ -314,26 +357,28 @@
                         $("#corpus-summary").html(samuel.summarized_text);
                         $('#box-summary').boxWidget('toggle');
 
-                        // DASHBOARD
-                        // console.log(samuel.dashboard);
-                        $("#corpus-dashboard").html(samuel.dashboard);
                         // PERCENT SHIT
                         $('#box-polarity').boxWidget('toggle');
-                        var varpositive = parseInt(samuel.percentage.positive.replace(/\D/g,''))/10.0;
-                        var varnegative = parseInt(samuel.percentage.negative.replace(/\D/g,''))/10.0;
-                        // TODO: SA NGAYON WALA PANG NEUTRAL
-                        // var varneutral = parseInt(samuel.percentage.neutral.replace(/\D/g,''))/10.0;
+                        console.log(samuel);
+                        var varpositive = parseFloat(samuel.percentage.positive.replace(/\D/g,''))/100.0;
+                        var varnegative = parseFloat(samuel.percentage.negative.replace(/\D/g,''))/100.0;
+                        var varneutral = parseFloat(samuel.percentage.neutral.replace(/\D/g,''))/100.0;
                         var donut = new Morris.Donut({
                             element: 'sales-chart',
                             resize: true,
                             colors: ["#12cc4a", "#cc1212", "#595959"],
                             data: [
                                 {label: "Positive Percentage", value: varpositive},
-                                {label: "Negative Percentage", value: varnegative}
-                                // {label: "Neutral Percentage", value: varneutral}
+                                {label: "Negative Percentage", value: varnegative},
+                                {label: "Neutral Percentage", value: varneutral}
                             ],
                             hideHover: 'auto'
                         });
+
+                        // DASHBOARD
+                        // console.log(samuel.dashboard);
+                        $("#corpus-dashboard").html(samuel.dashboard);
+
                         if (samuel.polarity==="positive") {
                             $("#corpus-polarity").html("&nbsp;"+samuel.percentage.positive+"&nbsp;<i class='fa fa-smile-o' aria-hidden='true'></i> &nbsp;Positive").addClass("text text-success");
                         }

@@ -11,23 +11,10 @@
 |
 */
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
-
 // Eto yung landing page
 Route::get('/', function(){
     return view('landing');
 });
-
-Route::get('/test', function(){
-    $data = array(
-        'title' => "EKSBI"
-    );
-    return view('pages/test')->with($data);
-});
-
-//Route::get('/linkifier', 'LinkifierController@index');
 
 Auth::routes();
 
@@ -35,14 +22,12 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/api_key', 'APIKeyController@index')->name('api_key');
 Route::get('/account', 'AccountController@index')->name('account');
 
+// LINKIFIER ROUTES
 Route::post('/linkify', 'LinkifierController@linkify');
 Route::get('/linkify', 'LinkifierController@linkify');
-
 Route::post('/linkifier/result', 'LinkifierController@linkifyRes');
 Route::get('/linkifier/result', 'LinkifierController@linkifyRes');
-
 Route::resource('linkifier', 'LinkifierController');
-
 
 // API KEY CRUD ROUTES
 Route::get('/api_key/gen_api_key', 'APIKeyController@gen_api_key')->name('gen_api_key');
@@ -57,13 +42,17 @@ Route::get('/home/fetch_data', 'HomeController@fetch_data')->name('fetch_data');
 // SAMUEL CORE VALIDATIONS ROUTES
 Route::get('/validate_key', 'ValidateKey@index');
 
-//ROUTES TO DO
+// TWITTER TEST
+Route::get('twitterUserTimeLine', 'TwitterController@twitterUserTimeLine');
+Route::post('tweet', ['as'=>'post.tweet','uses'=>'TwitterController@tweet']);
+
+//TODO: ROUTES
 //ABOUT PAGE "/about"
 //DOCUMENTATION PAGE "/documentation"
 //DEMO PAGE "/demo"
 //YUNG 1 link shit
 
-//REVAMPINGS TO DO
+//TODO: REVAMP
 //LANDING PAGE "/"
 //LOGIN PAGE "/login"
 //REGISTER PAGE "/register"

@@ -71,18 +71,18 @@ class LinkifierController extends Controller
             $init_data = $request->input('url-data');
             $json_object = json_decode($init_data, true);
             $data = array(
-                'title' => 'Samuel API',
+                'title' => 'Linkifier',
                 'description' => 'Understanding statements are hard, SAMUEL makes it easy',
                 'type' => $json_object['type']
             );
             $corpus = "";
 //            $corpus = array();
-            if($data['type'] === 'reddit' || $data['type'] === 'youtube')
+            if($data['type'] === 'reddit' || $data['type'] === 'youtube' || $data['type'] === 'forum.philboxing')
             {
                 $crawl = new Crawl();
                 foreach($json_object['replies'] as $reps)
                 {
-                    $corpus .= " " . $reps['content'];
+                    $corpus .= " " . $crawl->regStr($reps['content'], true);
 //                    array_push($corpus, $crawl->remNL($reps['content']));
                 }
 
@@ -90,6 +90,8 @@ class LinkifierController extends Controller
                     'creator' => $json_object['author'],
                     'replies' => $json_object['replies'],
                     'corpus' => $crawl->remNL($corpus),
+                    'website' => $json_object['type'],
+                    'url_link' => $json_object['link'],
 //                    'corpus' => $corpus,
                 );
 
@@ -106,13 +108,14 @@ class LinkifierController extends Controller
             $data = array(
               'link' => $request->input('linkify-url'),
                 'agree' => $request->input('terms-conditions'),
+                'numberpost' => $request->input('numberpost')
             );
             if($data['agree'])
             {
                 if($data['link']!='')
                 {
                     $crawl = new Crawl();
-                    $response = $crawl->parse($data['link']);
+                    $response = $crawl->parse($data['link'], $data['numberpost']);
                 }
                 else
                 {

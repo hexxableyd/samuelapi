@@ -56,6 +56,9 @@
                         <div class="form-group">
                             <input type="text" class="form-control form-control-lg" id="linkifyurl" name="linkify-url" aria-describedby="urllink" placeholder="Enter website's URL">
                         </div>
+                        <div class="form-group">
+                            <input type="number" min="15" class="form-control form-control-md" id="numberpost" name="numberpost" aria-describedby="urllink" value="15" placeholder="Enter number of comments.">
+                        </div>
                         <div class="form-check text-left">
                             <input type="checkbox" class="form-check-input" id="terms-conditions" name="terms-conditions" value=TRUE>
                             <label class="form-check-label" for="terms-conditions">I agree to Samuel API's terms and conditions.</label>
@@ -79,7 +82,7 @@
                 </div>
                 <div class="col-md-12 text-center alert-success" style="border-radius: 25px; display: none;" id="success-div">
                     <br><br>
-                    <img id="success-img" class="img-responsive img-normalizer" src="{{asset("/img/ico/facebook.png")}}" style="height: 2cm" alt="Reddit Img">
+                    <img id="success-img" class="img-responsive img-normalizer" src="{{asset("/img/ico/philbox.jpg")}}" style="height: 2cm" alt="Website Icon">
                     <h3><span id="success-msg">It seems your link is a Reddit Link !</span> <span class="fa fa-check"></span></h3>
                     <hr>
                     <h4>Everything is ready! We would just like you to click the button below to process to a page containing all
@@ -211,54 +214,97 @@
                 e.preventDefault();
                 hideAll();
                 $('#loading-div').show("fast","swing");
-                $.ajax({
-                    url:"/linkify",
-                    type: 'POST',
-                    data: new FormData(this),
-                    contentType: false,
-                    cache: false,
-                    processData: false,
-                    success:function(data) {
-                        if(!data.success){
-                            if(data.errors){
+                try {
+                    $.ajax({
+                        url:"/linkify",
+                        type: 'POST',
+                        data: new FormData(this),
+                        contentType: false,
+                        cache: false,
+                        processData: false,
+                        success:function(data) {
+                            if(!data.success){
+                                if(data.errors){
+                                    hideAll();
+                                    $('#error-div').show("fast","swing");
+                                    $("#err-msg").text(data.errors);
+                                }
+                            }else {
+                                // console.log(data.object);
                                 hideAll();
-                                $('#error-div').show("fast","swing");
-                                $("#err-msg").text(data.errors);
+                                $('#success-div').show("fast","swing");
+                                $('#success-msg').html(data.message);
+                                console.log(data.website);
+                                var link_data = [];
+                                if(data.website === 'reddit')
+                                {
+                                    link_data = {
+                                        type: data.website,
+                                        author: data.creator,
+                                        replies: data.replies,
+                                        link: data.link
+                                    };
+                                    // console.log(link_data);
+                                    $('#url-data').val(JSON.stringify(link_data));
+                                    $("#success-img").attr("src","{{asset('/img/ico/reddit.svg')}}");
+                                }
+                                else if(data.website === 'youtube')
+                                {
+                                    link_data = {
+                                        type: data.website,
+                                        author: data.creator,
+                                        replies: data.replies,
+                                        link: data.link
+                                    };
+                                    // console.log(link_data);
+                                    $('#url-data').val(JSON.stringify(link_data));
+                                    $("#success-img").attr("src","{{asset('/img/ico/youtube.png')}}");
+                                }
+                                else if(data.website === 'forum.philboxing')
+                                {
+                                    link_data = {
+                                        type: data.website,
+                                        author: data.creator,
+                                        replies: data.replies,
+                                        link: data.link
+                                    };
+                                    $('#url-data').val(JSON.stringify(link_data));
+                                    $("#success-img").attr("src","{{asset('/img/ico/philbox.jpg')}}");
+                                }
+                                author = data.creator;
+                                replies = data.replies;
                             }
-                        }else {
-                            // console.log(data.object);
-                            hideAll();
-                            $('#success-div').show("fast","swing");
-                            $('#success-msg').text(data.message);
-                            console.log(data);
-                            var link_data = [];
-                            if(data.website === 'reddit')
-                            {
-                                link_data = {
-                                    type: 'reddit',
-                                    author: data.creator,
-                                    replies: data.replies
-                                };
-                                // console.log(link_data);
-                                $('#url-data').val(JSON.stringify(link_data));
-                                $("#success-img").attr("src","{{asset('/img/ico/reddit.svg')}}");
-                            }
-                            else if(data.website === 'youtube')
-                            {
-                                link_data = {
-                                    type: 'youtube',
-                                    author: data.creator,
-                                    replies: data.replies
-                                };
-                                // console.log(link_data);
-                                $('#url-data').val(JSON.stringify(link_data));
-                                $("#success-img").attr("src","{{asset('/img/ico/youtube.png')}}");
-                            }
-                            author = data.creator;
-                            replies = data.replies;
                         }
-                    }
-                });
+                    });
+                }
+                catch(Exception)
+                {
+                    hideAll();
+                    $('#error-div').show("fast","swing");
+                    $("#err-msg").text("Something went wrong.");
+                }
+            });
+
+            $("#numberpost").hide();
+            $('#linkifyurl').on('keyup paste', function() {
+                var link_val = $('#linkifyurl').val().toUpperCase();
+                var numeric_show = false;
+                if(link_val.indexOf('PHILBOXING') >= 0)
+                {
+                    numeric_show = true;
+                }
+                else
+                {
+                    numeric_show = false;
+                }
+                switch (numeric_show){
+                    case true:
+                        $('#numberpost').show();
+                        break;
+                    case false:
+                        $('#numberpost').hide();
+                        break;
+                }
             });
         });
         function tryAgain() {
