@@ -15,7 +15,7 @@ return [
 
     'name' => env('APP_NAME', 'Samuel API'),
     'author' => env('APP_AUTHOR','HorcruxPanda'),
-    'samuel_core' => env('SAMUEL_CORE'),
+    'samuel_core' => "http://192.168.1.14:63342/samuel_api",
 
     /*
     |--------------------------------------------------------------------------

@@ -327,66 +327,61 @@
                 {{--corpus.push("{{$object}}");--}}
         {{--@endforeach--}}
         var start_time = new Date().getTime();
-        $.ajax("http://192.168.1.14:63342/samuel_init?KEY=0mbIjzCz1JFkhEeDpkDNYTHgYzmJyogbbpOU1rqc", {
-            success: function(data) {
-                Samuel = data;
-                data = {
-                    'text':"{{$corpus}}",
-                    'summary_length':8,
-                    'visualize': true,
-                    'dashboard_style': false
-                };
-                $.ajax({
-                    url: "http://192.168.1.14" +
-                    ":63342/samuel_api?KEY=0mbIjzCz1JFkhEeDpkDNYTHgYzmJyogbbpOU1rqc",
-                    type: 'POST',
-                    data: JSON.stringify(data),
-                    contentType:"application/json",
-                    success:function(samuel) {
-                        // console.log(samuel);
+        data = {
+            'text':"{{$corpus}}",
+            'summary_length':8,
+            'visualize': true,
+            'dashboard_style': false
+        };
+        $.ajax({
+            url: "{{ config('app.samuel_core') }}" +
+            "?KEY=O93wdl13DyudQkSdFIIrq9kc0xhLUPV6XPMz6btr",
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType:"application/json",
+            success:function(samuel) {
+                // console.log(samuel);
 
-                        // REQUEST TIME
-                        var request_time = new Date().getTime() - start_time;
-                        $('#response-time').html("It took <b>"+(request_time/1000)+"<b> seconds to process your request.");
-                        // console.log(request_time)1;
+                // REQUEST TIME
+                var request_time = new Date().getTime() - start_time;
+                $('#response-time').html("It took <b>"+(request_time/1000)+"<b> seconds to process your request.");
+                // console.log(request_time)1;
 
-                        // CORPUS SUMMARY
-                        $("#corpus-summary").html(samuel.summarized_text);
-                        $('#box-summary').boxWidget('toggle');
+                // CORPUS SUMMARY
+                $("#corpus-summary").html(samuel.summarized_text);
+                $('#box-summary').boxWidget('toggle');
 
-                        // PERCENT SHIT
-                        $('#box-polarity').boxWidget('toggle');
-                        console.log(samuel);
-                        var varpositive = parseFloat(samuel.percentage.positive.replace(/\D/g,''))/100.0;
-                        var varnegative = parseFloat(samuel.percentage.negative.replace(/\D/g,''))/100.0;
-                        var varneutral = parseFloat(samuel.percentage.neutral.replace(/\D/g,''))/100.0;
-                        var donut = new Morris.Donut({
-                            element: 'sales-chart',
-                            resize: true,
-                            colors: ["#12cc4a", "#cc1212", "#595959"],
-                            data: [
-                                {label: "Positive Percentage", value: varpositive},
-                                {label: "Negative Percentage", value: varnegative},
-                                {label: "Neutral Percentage", value: varneutral}
-                            ],
-                            hideHover: 'auto'
-                        });
-
-                        // DASHBOARD
-                        // console.log(samuel.dashboard);
-                        $("#corpus-dashboard").html(samuel.dashboard);
-
-                        if (samuel.polarity==="positive") {
-                            $("#corpus-polarity").html("&nbsp;"+samuel.percentage.positive+"&nbsp;<i class='fa fa-smile-o' aria-hidden='true'></i> &nbsp;Positive").addClass("text text-success");
-                        }
-                        else if(samuel.polarity==="negative"){
-                            $("#corpus-polarity").html("&nbsp;"+samuel.percentage.negative+"&nbsp;<i class='fa fa-frown-o' aria-hidden='true'></i> &nbsp;Negative").addClass("text text-danger");
-                        }
-                        else{
-                            $("#corpus-polarity").html("&nbsp;"+samuel.percentage.neutral+"&nbsp;<i class='fa fa-meh-o' aria-hidden='true'></i> &nbsp;Neutral").addClass("text text-primary");
-                        }
-                    }
+                // PERCENT SHIT
+                $('#box-polarity').boxWidget('toggle');
+                console.log(samuel);
+                var varpositive = parseFloat(samuel.percentage.positive.replace(/\D/g,''))/100.0;
+                var varnegative = parseFloat(samuel.percentage.negative.replace(/\D/g,''))/100.0;
+                var varneutral = parseFloat(samuel.percentage.neutral.replace(/\D/g,''))/100.0;
+                var donut = new Morris.Donut({
+                    element: 'sales-chart',
+                    resize: true,
+                    colors: ["#12cc4a", "#cc1212", "#595959"],
+                    data: [
+                        {label: "Positive Percentage", value: varpositive},
+                        {label: "Negative Percentage", value: varnegative},
+                        {label: "Neutral Percentage", value: varneutral}
+                    ],
+                    hideHover: 'auto'
                 });
+
+                // DASHBOARD
+                // console.log(samuel.dashboard);
+                $("#corpus-dashboard").html(samuel.dashboard);
+
+                if (samuel.polarity==="positive") {
+                    $("#corpus-polarity").html("&nbsp;"+samuel.percentage.positive+"&nbsp;<i class='fa fa-smile-o' aria-hidden='true'></i> &nbsp;Positive").addClass("text text-success");
+                }
+                else if(samuel.polarity==="negative"){
+                    $("#corpus-polarity").html("&nbsp;"+samuel.percentage.negative+"&nbsp;<i class='fa fa-frown-o' aria-hidden='true'></i> &nbsp;Negative").addClass("text text-danger");
+                }
+                else{
+                    $("#corpus-polarity").html("&nbsp;"+samuel.percentage.neutral+"&nbsp;<i class='fa fa-meh-o' aria-hidden='true'></i> &nbsp;Neutral").addClass("text text-primary");
+                }
             }
         });
     </script>

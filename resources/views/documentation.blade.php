@@ -6,31 +6,28 @@
         <div class="col-md-12">
             <div style="padding:20px" class="panel panel-default">
                 <div class="panel-body">
-                    <h1>I. Quickstart</h1>
+                    <h2>Quickstart</h2>
                     <p>
                         Here is the basic code on how to use the Samuel API
                     </p>
                     <pre style="padding:30px" class='prettyprint'>{{ $basic_code }}</pre>
-                    <p class='alert alert-info'>
-                        Dont forget to include your API Key in the link: {{ config('app.samuel_core') }}?KEY=YOUR_API_KEY
+                    <p>
+                        Dont forget to include your API Key in the link: <strong>{{ config('app.samuel_core') }}?KEY=YOUR_API_KEY</strong>
                     </p>
+                    
                     <h2>Parameters</h2>
+                    <p>
+                        You can add other parameters that are listed below, base on how you want to use the SAMUEL API.
+                    </p>
+                    <pre style="padding:30px" class='prettyprint'>{{ $set_param }}</pre>
                     <table class='table table-hover'>
+                        @foreach($parameters as $param)
                         <tr>
-                            <td><strong>text (required)</strong></td>
-                            <td>String</td>
-                            <td>The collection of text data.</td>
+                            <td><strong>{{ $param->param }} @if($param->required) (required) @endif</strong></td>
+                            <td>{{$param->data_type}}</td>
+                            <td>{{ $param->description }}</td>
                         </tr>
-                        <tr>
-                            <td><strong>summary_length (required)</strong></td>
-                            <td>int</td>
-                            <td>The number of sentences needed in the summary</td>
-                        </tr>
-                        <tr>
-                            <td><strong>visualize</strong></td>
-                            <td>boolean</td>
-                            <td>Determines if the samuel will return the dashboard</td>
-                        </tr>
+                        @endforeach
                     </table>
                 </div>
             </div>

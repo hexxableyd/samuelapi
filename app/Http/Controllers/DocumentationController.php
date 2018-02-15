@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Parameter;
 
 class DocumentationController extends Controller
 {
@@ -17,12 +18,18 @@ class DocumentationController extends Controller
         $data['active_nav']="#documentation";
         $data['page_title']="Documentation";
 
-        $language = "html";
-        $basic_source_file = fopen("../docs/basic.html", "r") or die("Unable to open file!");
-        $basic_source = fread($basic_source_file,filesize("../docs/basic.html"));
-        fclose($basic_source_file);
+        $basic_src_file = fopen("../docs/basic.html", "r") or die("Unable to open file!");
+        $basic_code = fread($basic_src_file,filesize("../docs/basic.html"));
+        fclose($basic_src_file);
 
-        $data['basic_code'] = $basic_source;
+        $set_param_src_file = fopen("../docs/set_params.html", "r") or die("Unable to open file!");
+        $set_param = fread($set_param_src_file,filesize("../docs/set_params.html"));
+        fclose($set_param_src_file);
+
+        $data['basic_code'] = $basic_code;
+        $data['set_param'] = $set_param;
+
+        $data['parameters'] = Parameter::orderBy('param', 'asc')->get();
 
 
         return view('documentation',$data);
