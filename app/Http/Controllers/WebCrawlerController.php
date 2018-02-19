@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Thujohn\Twitter\Twitter;
+use Twitter;
 
 class WebCrawlerController extends Controller
 {
@@ -15,9 +15,14 @@ class WebCrawlerController extends Controller
             if($web['success']) {
                 switch ($web['website']) {
                     case 'reddit':
+                        // GETS OBJECT FROM REDDIT URL
                         $json = $this->getObjectReddit($web['link']);
+
                         if ($json['success']) {
+                            // DECODES THE URL TO GET THE JSON ARRAY
                             $web['object'] = json_decode($json['object']);
+
+                            // GETS CREATOR DATA FROM OBJECT
                             $reddit_creator = $web['object'][0]->data->children;
                             $date = new \DateTime();
                             $date->setTimestamp($reddit_creator[0]->data->created);
@@ -35,17 +40,31 @@ class WebCrawlerController extends Controller
                             if (!empty($reddit_creator[0]->data->preview)) {
                                 $web['creator']['img-url'] = $reddit_creator[0]->data->preview->images[0]->source->url;
                             }
+
+                            // GETS REPLY DATA FROM OBJECT
                             $web['replies'] = $this->getRepliesReddit($web['object'][1]);
+                            if(count($web['replies']) > $numposts)
+                            {
+                                $web['replies'] = array_slice($web['replies'], 0, $numposts);
+                            }
+
+                            // THE RETURN REPLY IF SUCCESSFUL
+                            $web['message'] = "<b>" . $web['creator']['title'] . "</b>";
+                            $web['message'] .= "<br>by <i>" . $web['creator']['author'] . "</i>";
                         } else {
                             $web['success'] = FALSE;
                             $web['errors'] = $json['errors'];
                         }
                         break;
                     case 'youtube':
+                        // EXPLODES THE LINK TO GET THE VIDEO ID
                         $vidID = explode("?v=", $web['link']);
-                        //TODO : WHILE nextPageToken is not empty, recursion lang tapos array_merge sa comment\
+
+                        // GETS THE VIDEO OBJECT FROM URL BY VIDEO ID
                         $json = $this->getObjectYoutube($vidID[1]);
+
                         if ($json['success']) {
+                            // GETS VIDEO CREATOR DATA FROM OBJECT
                             $video_creator = json_decode($json['object-creator']);
                             $web['creator'] = array(
                                 'theme' => 'skin-red',
@@ -60,34 +79,109 @@ class WebCrawlerController extends Controller
                                 'date' => date('Y-m-d', strtotime($video_creator->items[0]->snippet->publishedAt))
                             );
 
+                            // GETS COMMENT THREAD DATA FROM OBJECT
                             $video_comments = json_decode($json['object-comments']);
                             $web['replies'] = $this->getRepliesYoutube($video_comments);
-                            $ctr_page = 0;
-                            // TODO : GET COMMENTS YOUTUBE MORE THAN 100
-//                            try{
-//                                while(!empty($video_comments->nextPageToken)){
-//                                    $next_page = $this->getObjectYoutube($vidID[1], false, $video_comments->nextPageToken);
-//                                    $video_comments = json_decode($next_page['object-comments']);
-//                                    $web['replies'] = array_merge($web['replies'], $this->getRepliesYoutube($video_comments));
-//                                    ++$ctr_page;
-//                                    break;
-//                                }
-//                            }
-//                            catch (\Exception $e)
-//                            {
+                            try{
+                                // RECURSION OF FUNCTIONS TO GET MORE THAN 100 COMMENTS WHICH YOUTUBE API LIMITS ON ONE REQUEST
+                                while(!empty($video_comments->nextPageToken) && count($web['replies'])<$numposts){
+                                    $next_page = $this->getObjectYoutube($vidID[1], false, $video_comments->nextPageToken);
+                                    $video_comments = json_decode($next_page['object-comments']);
+                                    $web['replies'] = array_merge($web['replies'], $this->getRepliesYoutube($video_comments));
+                                }
+                            }
+                            catch (\Exception $e)
+                            {
 //                                $web['success'] = FALSE;
-//                                $web['errors'] = "Something went wrong with getting comments more than ".$ctr_page;
-////                                $web['errors'] = $video_comments->nextPageToken;
-//                                break;
-//                            }
+//                                $web['errors'] = $video_comments->nextPageToken;
+                                // ERROR CODE : COMMENT RECURSION ERROR ; TYPE: YOUTUBE
+                                break;
+                            }
+                            if(count($web['replies']) > $numposts)
+                            {
+                                $web['replies'] = array_slice($web['replies'], 0, $numposts);
+                            }
+
+                            // THE RETURN REPLY IF SUCCESSFUL
+                            $web['message'] = "<b>" . $web['creator']['title'] . "</b>";
+                            $web['message'] .= "<br>by <i>" . $web['creator']['author'] . "</i>";
                         } else {
                             $web['success'] = FALSE;
                             $web['errors'] = $json['errors'];
                         }
                         break;
+                    case 'twitter' :
+                        $web_url = explode('&',parse_url($web['link'], PHP_URL_QUERY));
+                        foreach ($web_url as $obj)
+                        {
+                            if((strpos(strtoupper($obj),"Q=")!==FALSE))
+                            {
+                                $queue = urldecode(explode('q=', $obj)[1]);
+                                $web['queue'] = $queue;
+                                break;
+                            }
+                        }
+                        if(isset($queue))
+                        {
+                            try{
+                                // TWITTER API ALREADY RETURNS JSON
+                                $json = $this->getObjectTwitter($queue);
+                                if($json['success'])
+                                {
+                                    // GETS OBJECT
+                                    $web['object'] = $json['object'];
+
+                                    // GETS CREATOR ARRAY FROM JSON
+                                    $web['creator'] = array(
+                                        'theme' => 'skin-blue',
+                                        'icon' => '/img/ico/twitter.png',
+                                        'title' => 'Query : '.$queue,
+                                        'content' => "",
+                                        'author' => "You Searched",
+                                        'author-link' => $link,
+                                        'permalink' => explode('twitter.com', $link)[1],
+                                        'upvote' => "N/A",
+                                        'date' => date('Y-m-d')
+                                    );
+
+                                    // GETS TWITTER THREAD FROM JSON
+                                    $web['replies'] = array();
+                                    foreach ($web['object']->statuses as $threads)
+                                    {
+                                        array_push($web['replies'], array(
+                                            'content' => $this->regStr($threads->text),
+                                            'author' => $this->regStr($threads->user->name),
+                                            'date' => date('Y-m-d', strtotime($threads->created_at))
+                                        ));
+                                    }
+                                    if(count($web['replies']) > $numposts)
+                                    {
+                                        $web['replies'] = array_slice($web['replies'], 0, $numposts);
+                                    }
+
+                                    // MESSAGE REPLY
+                                    $web['message'] = "<b>" . $web['creator']['title'] . "</b>";
+                                }
+                                else
+                                {
+                                    $web['success'] = FALSE;
+                                    $web['errors'] = $json['errors'];
+                                }
+                            }
+                            catch (\Exception $e)
+                            {
+                                // QWERTY LOG ERROR
+                                $web['success'] = FALSE;
+                                $web['errors'] = "Something went wrong with getting the Twitter Object";
+                            }
+                        }
+                        break;
                     case 'forum.philboxing':
+                        // GETS OBJECT FROM URL
                         $json = $this->getObjectForum($web['link'], 'philboxing');
+
                         if($json['success']){
+                            // GETS CREATOR ARRAY FROM JSON
                             $web['creator'] = array(
                                 'theme' => 'skin-blue',
                                 'icon' => '/img/ico/philbox.jpg',
@@ -99,6 +193,8 @@ class WebCrawlerController extends Controller
                                 'upvote' => "N/A",
                                 'date' => date('Y-m-d')
                             );
+
+                            // GETS REPLIES FROM ARRAY
                             $web['replies'] = $json['discussion'];
                             $ctr = 15;
                             while(count($web['replies']) < $numposts)
@@ -119,6 +215,13 @@ class WebCrawlerController extends Controller
                                     $ctr += 15;
                                 }
                             }
+                            if(count($web['replies']) > $numposts)
+                            {
+                                $web['replies'] = array_slice($web['replies'], 0, $numposts);
+                            }
+
+                            // MESSAGE REPLY
+                            $web['message'] = "<b>" . $web['creator']['title'] . "</b>";
                         }
                         else{
                             $web['success'] = FALSE;
@@ -127,11 +230,6 @@ class WebCrawlerController extends Controller
                         break;
                     default:
                         break;
-                }
-                $web['message'] = "<b>" . $web['creator']['title'] . "</b>";
-                if($web['creator']['author'] !== "Author")
-                {
-                    $web['message'] .= "<br>by <i>" . $web['creator']['author'] . "</i>";
                 }
             }
             return $web;
@@ -193,6 +291,19 @@ class WebCrawlerController extends Controller
             {
                 $result['success'] = FALSE;
                 $result['errors'] = 'We only "Linkify" comments on Facebook posts! And we\'re pretty sure your link is not one of them.';
+                $result['website'] = NULL;
+            }
+        }
+        else if((strpos(strtoupper(parse_url($result['link'], PHP_URL_HOST)),"TWITTER")!==FALSE)) {
+            if((strpos(strtoupper($result['link']),"/SEARCH?Q=")!=FALSE)) {
+                $result['success'] = TRUE;
+                $result['message'] = "Your link is a Twitter Link!";
+                $result['website'] = "twitter";
+            }
+            else
+            {
+                $result['success'] = FALSE;
+                $result['errors'] = 'We only "Linkify" tweet searches on Twitter! And we\'re pretty sure your link is not one of them.';
                 $result['website'] = NULL;
             }
         }
@@ -283,7 +394,7 @@ class WebCrawlerController extends Controller
             $request = "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=".$videoid."&key=".$apikey."&maxResults=100&order=relevance&textFormat=plainText";
             if ($nextPageToken !== "")
             {
-                $request .= "&nextPageToken=".$nextPageToken;
+                $request .= "&pageToken=".$nextPageToken;
             }
             $result['object-comments'] = file_get_contents($request);
             // REQUEST ON VIDEO INFORMATION
@@ -392,6 +503,32 @@ class WebCrawlerController extends Controller
         catch (\Exception $e){
             $result['success'] = FALSE;
             $result['errors'] = "Don't worry, it just seems like there's some error.\nERROR CODE: Exception Error || GET Forum Discussion";
+        }
+        finally{
+            return $result;
+        }
+    }
+
+    // TWITTER FUNCTIONS
+    public function getObjectTwitter($queue)
+    {
+        $result = array();
+        try{
+            $result['success'] = TRUE;
+            $result['object'] = Twitter::getSearch([
+                'q' => $queue,
+                'count' => 100,
+                'result_type' => 'mixed',
+                'lang' => 'en',
+            ]);
+        }
+        catch (\RuntimeException $e){
+            $result['success'] = FALSE;
+            $result['errors'] = "Don't worry, it just seems like there's some error.\nERROR CODE: Runtime Error";
+        }
+        catch (\Exception $e){
+            $result['success'] = FALSE;
+            $result['errors'] = "Don't worry, it just seems like there's some error.\nERROR CODE: Exception Error";
         }
         finally{
             return $result;

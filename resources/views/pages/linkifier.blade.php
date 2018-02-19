@@ -50,13 +50,15 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center" style="display: block;" id="linkify-div">
-                    <form class="form-horizontal" id="link-url" method="POST" action="/linkify">
+                    <form class="form-horizontal" id="link-url" method="POST" action="{{url('/linkify')}}">
                         {{ csrf_field() }}
                         <br>
-                        <div class="form-group">
+                        <div class="form-group text-left">
+                            <label for="linkifyurl" class="text-muted mb-0">Discussion's URL</label>
                             <input type="text" class="form-control form-control-lg" id="linkifyurl" name="linkify-url" aria-describedby="urllink" placeholder="Enter website's URL">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group text-left" id="numberpost-div">
+                            <label for="linkifyurl" class="text-muted mb-0">Maximum Number of Samples to be taken</label>
                             <input type="number" min="15" class="form-control form-control-md" id="numberpost" name="numberpost" aria-describedby="urllink" value="15" placeholder="Enter number of comments.">
                         </div>
                         <div class="form-check text-left">
@@ -87,7 +89,7 @@
                     <hr>
                     <h4>Everything is ready! We would just like you to click the button below to process to a page containing all
                     the things we found from the link you gave. Thank you.</h4>
-                    <form class="form-horizontal" id="link-data" method="POST" action="/linkifier/result">
+                    <form class="form-horizontal" id="link-data" method="POST" action="{{url('/linkifier/result')}}">
                         {{ csrf_field() }}
                         <br>
                         <div class="form-group" style="display: none;">
@@ -223,6 +225,7 @@
                         cache: false,
                         processData: false,
                         success:function(data) {
+                            // TODO : LOG SUCCESS AND LOG ERRORS
                             if(!data.success){
                                 if(data.errors){
                                     hideAll();
@@ -230,11 +233,9 @@
                                     $("#err-msg").text(data.errors);
                                 }
                             }else {
-                                // console.log(data.object);
                                 hideAll();
                                 $('#success-div').show("fast","swing");
                                 $('#success-msg').html(data.message);
-                                console.log(data.website);
                                 var link_data = [];
                                 if(data.website === 'reddit')
                                 {
@@ -244,7 +245,6 @@
                                         replies: data.replies,
                                         link: data.link
                                     };
-                                    // console.log(link_data);
                                     $('#url-data').val(JSON.stringify(link_data));
                                     $("#success-img").attr("src","{{asset('/img/ico/reddit.svg')}}");
                                 }
@@ -256,7 +256,6 @@
                                         replies: data.replies,
                                         link: data.link
                                     };
-                                    // console.log(link_data);
                                     $('#url-data').val(JSON.stringify(link_data));
                                     $("#success-img").attr("src","{{asset('/img/ico/youtube.png')}}");
                                 }
@@ -271,8 +270,17 @@
                                     $('#url-data').val(JSON.stringify(link_data));
                                     $("#success-img").attr("src","{{asset('/img/ico/philbox.jpg')}}");
                                 }
-                                author = data.creator;
-                                replies = data.replies;
+                                else if(data.website === 'twitter')
+                                {
+                                    link_data = {
+                                        type: data.website,
+                                        author: data.creator,
+                                        replies: data.replies,
+                                        link: data.link
+                                    };
+                                    $('#url-data').val(JSON.stringify(link_data));
+                                    $("#success-img").attr("src","{{asset('/img/ico/twitter.png')}}");
+                                }
                             }
                         }
                     });
@@ -284,26 +292,17 @@
                     $("#err-msg").text("Something went wrong.");
                 }
             });
-
-            $("#numberpost").hide();
-            $('#linkifyurl').on('keyup paste', function() {
+            $('#numberpost-div').hide();
+            $('#linkifyurl').on('keyup paste', function () {
                 var link_val = $('#linkifyurl').val().toUpperCase();
-                var numeric_show = false;
-                if(link_val.indexOf('PHILBOXING') >= 0)
+                // TODO : CHECK URL IF EXISTS
+                if(link_val.indexOf('PHILBOXING') >= 0 || link_val.indexOf('REDDIT') >= 0 || link_val.indexOf('YOUTUBE') >= 0 || link_val.indexOf('TWITTER') >= 0)
                 {
-                    numeric_show = true;
+                    $('#numberpost-div').show();
                 }
                 else
                 {
-                    numeric_show = false;
-                }
-                switch (numeric_show){
-                    case true:
-                        $('#numberpost').show();
-                        break;
-                    case false:
-                        $('#numberpost').hide();
-                        break;
+                    $('#numberpost-div').hide();
                 }
             });
         });
@@ -316,10 +315,6 @@
             $('#loading-div').hide();
             $('#error-div').hide();
             $('#success-div').hide();
-        }
-        function showResult() {
-            console.log(author);
-            console.log(replies);
         }
     </script>
 @endsection

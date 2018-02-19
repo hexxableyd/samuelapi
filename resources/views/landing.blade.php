@@ -3,34 +3,26 @@
 @section('content')
 
 <header>
-    <!--Left half of the hero image-->
     <div id="leftHalf">
         <div class="intro">
             <h1 class="animated fadeInUp"><span style="color:#46d264">S A M U E</span></h1>
             <h2 class="animated fadeInUp">Sentiments are hard,</h2>
         </div>
     </div>
-
-    <!--Right half of the hero image-->
     <div id="rightHalf">
         <div class="intro">
             <h1 class="animated fadeInUp left"><span style="color:#FF4747">L</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A P I</h1>
             <h2 class="animated fadeInUp left">SAMUEL makes it easy</h2>
         </div>
     </div>
-
     <div id="scrollDown">
         <a href="#aboutMe" id="button" class="page-scroll">
             <i class="fa fa-angle-double-down"></i>
         </a>
     </div>
-    <!--end hero image-->
 </header>
 
-<!--Website content-->
 <div class="site-inner">
-    {{--CHECKPOINT--}}
-    <!-- About section -->
     <section id="aboutMe">
         <div class="container">
             <div class="row">
@@ -40,7 +32,7 @@
             </div>
             <div class="row">
                 <div class="col-md-5 introduction">
-                    <h3 class="introTitle text-center" style="color:#FF4747">NON-DEVELOPERS</h3>
+                    <h3 class="introTitle text-center" style="color:#FF4747">NORMAL CONSUMERS</h3>
                     <p class="text-justify">
                         &nbsp;&nbsp;&nbsp;Comprehensive, easy-to-use, and utter bug-free! With just a
                         link from one of your favorite supported websites, SAMUEL API can parse and get only
@@ -50,23 +42,32 @@
                     <div class="containerIntro" style="margin-top:2em">
                         <h4 class="introSub">Supported Websites:</h4>
                         <ul class="list-inline text-center">
+                            {{--TODO : INSTRUCTIONS--}}
                             <li class="icon-list-width">
-                                <img src="{{asset('img/ico/reddit.svg')}}" class="img-responsive icon-list img-normalizer" alt="Reddit">
+                                <a href="#redditModal" class="my-work" data-toggle="modal">
+                                    <img src="{{asset('img/ico/reddit.svg')}}" class="img-responsive icon-list img-normalizer" alt="Reddit">
+                                </a>
                             </li>
                             <li class="icon-list-width">
-                                <img src="{{asset('img/ico/facebook.png')}}" class="img-responsive icon-list img-normalizer" alt="Facebook">
+                                <a href="#forumModal" class="my-work" data-toggle="modal">
+                                    <img src="{{asset('img/ico/forum.png')}}" class="img-responsive icon-list img-normalizer" alt="Forums">
+                                </a>
                             </li>
                             <li class="icon-list-width">
-                                <img src="{{asset('img/ico/twitter.png')}}" class="img-responsive icon-list img-normalizer" alt="Twitter">
+                                <a href="#twitterModal" class="my-work" data-toggle="modal">
+                                    <img src="{{asset('img/ico/twitter.png')}}" class="img-responsive icon-list img-normalizer" alt="Twitter">
+                                </a>
                             </li>
                             <li class="icon-list-width">
-                                <img src="{{asset('img/ico/youtube.png')}}" class="img-responsive icon-list img-normalizer" alt="Youtube">
+                                <a href="#youtubeModal" class="my-work" data-toggle="modal">
+                                    <img src="{{asset('img/ico/youtube.png')}}" class="img-responsive icon-list img-normalizer" alt="Youtube">
+                                </a>
                             </li>
                             <br>
-                            <li>MORE COMING OUT SOON !</li>
+                            <li>AND MORE! Click on the icon to see their respective usage instructions!</li>
                         </ul>
                     </div>
-                    <a class="btn-danger btn center-block" href="/linkifier">TRY IT NOW !</a>
+                    <a class="btn-danger btn center-block" href="{{url('/linkifier')}}">TRY IT NOW !</a>
                 </div>
                 <div class="col-md-2 midimage">
                     <img class="img-responsive hidden-sm img-normalizer" src="{{asset('img/mid-img.jpg')}}" alt="">
@@ -85,9 +86,9 @@
                         <p>&nbsp;&nbsp;&nbsp;Use our API for free today until production date! Free of charge, all we
                         will ask are feedbacks and performance notes!</p>
                         @guest
-                            <a class="btn-success btn center-block" href="/register">GET STARTED NOW</a>
+                            <a class="btn-success btn center-block" href="{{url('/register')}}">GET STARTED NOW</a>
                         @else
-                            <a class="btn-success btn center-block" href="/home">YOU ARE ALREADY LOGGED IN! CLICK TO GO HOME.</a>
+                            <a class="btn-success btn center-block" href="{{url('/home')}}">YOU ARE ALREADY LOGGED IN! CLICK TO GO HOME.</a>
                         @endguest
                     </div>
                 </div>
@@ -96,177 +97,51 @@
     </section><!--About section end-->
 
     <!-- Skills section -->
-    <section class="skills">
-        <div class="skills-content">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-4 col-md-4 col-sm-6 text-center">
-						<span class="fa-stack fa-lg">
-						  <i class="fa fa-circle fa-stack-2x"></i>
-						  <i class="fa fa-pencil fa-stack-1x"  style="color:#38a1d2"></i>
-						</span>
-                        <h3>Some skill</h3>
-                        <p>And tell me you love me, come back and haunt me,
-                            Oh and I rush to the start.
-                            Running in circles, chasing tails,
-                            And coming back as we are.
-                        </p>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6 text-center">
-						<span class="fa-stack fa-lg">
-						  <i class="fa fa-circle fa-stack-2x"></i>
-						  <i class="fa fa-code fa-stack-1x"  style="color:#38a1d2"></i>
-						</span>
-                        <h3>Some other skill</h3>
-                        <p>Nobody said it was easy,
-                            oh its such a shame for us to part.
-                            Nobody said it was easy,
-                            No-one ever said it would be so hard.
-                        </p>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6 text-center">
-						<span class="fa-stack fa-lg">
-						  <i class="fa fa-circle fa-stack-2x"></i>
-						  <i class="fa fa-camera fa-stack-1x"  style="color:#38a1d2"></i>
-						</span>
-                        <h3>Oh look, one more skill</h3>
-                        <p>Now there's just the "ooh-ohh" part, so here's some lorem ipsum: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut semper euismod nisl eu rutrum.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!--Work section-->
-    <section id="work">
-        <div class="container">
-            <div class="row">
-                <div class="center-block text-center">
-                    <h2 class="sectionTitle pretty"><span>My work</span></h2>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <!-- Work tiles start here -->
-            <div class="col-lg-3 col-md-3 col-sm-6 work">
-                <div class="work-image"></div>
-                <div class="work-hover">
-                    <div class="work-hover-title">
-                        <h3>My awesome project</h3>
-                        <div class="link-inner">
-                            <a href="#" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
-                            <a href="#workModal1" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
-                        </div>
-                    </div>
-                </div>
-                <img src="{{asset('img/work/5small.jpg')}}" class="img-responsive" alt="">
-            </div><!-- work tile end -->
-            <div class="col-lg-3 col-md-3 col-sm-6 work">
-                <div class="work-image"></div>
-                <div class="work-hover">
-                    <div class="work-hover-title">
-                        <h3>My awesome project</h3>
-                        <div class="link-inner">
-                            <a href="#" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
-                            <a href="#workModal2" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
-                        </div>
-                    </div>
-                </div>
-                <img src="{{asset('img/work/6small.jpg')}}" class="img-responsive" alt="">
-            </div><!-- work tile end -->
-            <div class="col-lg-3 col-md-3 col-sm-6 work">
-                <div class="work-image"></div>
-                <div class="work-hover blue">
-                    <div class="work-hover-title">
-                        <h3>My awesome project</h3>
-                        <div class="link-inner">
-                            <a href="#" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
-                            <a href="#workModal3" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
-                        </div>
-                    </div>
-                </div>
-                <img src="{{asset('img/work/1small.jpg')}}" class="img-responsive" alt="">
-            </div><!-- work tile end -->
-            <div class="col-lg-3 col-md-3 col-sm-6 work">
-                <div class="work-image"></div>
-                <div class="work-hover blue">
-                    <div class="work-hover-title">
-                        <h3>My awesome project</h3>
-                        <div class="link-inner">
-                            <a href="#" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
-                            <a href="#workModal4" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
-                        </div>
-                    </div>
-                </div>
-                <img src="{{asset('img/work/2small.jpg')}}" class="img-responsive" alt="">
-            </div><!-- work tile end -->
-        </div>
-
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-6 work">
-                <div class="work-image"></div>
-                <div class="work-hover">
-                    <div class="work-hover-title">
-                        <h3>My awesome project</h3>
-                        <div class="link-inner">
-                            <a href="#" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
-                            <a href="#workModal5" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
-                        </div>
-                    </div>
-                </div>
-                <img src="{{asset('img/work/7small.jpg')}}" class="img-responsive" alt="">
-            </div><!-- work tile end -->
-            <div class="col-lg-3 col-md-3 col-sm-6 work">
-                <div class="work-image"></div>
-                <div class="work-hover">
-                    <div class="work-hover-title">
-                        <h3>My awesome project</h3>
-                        <div class="link-inner">
-                            <a href="#" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
-                            <a href="#workModal6" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
-                        </div>
-                    </div>
-                </div>
-                <img src="{{asset('img/work/8small.jpg')}}" class="img-responsive" alt="">
-            </div><!-- work tile end -->
-            <div class="col-lg-3 col-md-3 col-sm-6 work">
-                <div class="work-image"></div>
-                <div class="work-hover blue">
-                    <div class="work-hover-title">
-                        <h3>My awesome project</h3>
-                        <div class="link-inner">
-                            <a href="#" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
-                            <a href="#workModal7" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
-                        </div>
-                    </div>
-                </div>
-                <img src="{{asset('img/work/3small.jpg')}}" class="img-responsive" alt="">
-            </div><!-- work tile end -->
-            <div class="col-lg-3 col-md-3 col-sm-6 work">
-                <div class="work-image"></div>
-                <div class="work-hover blue">
-                    <div class="work-hover-title">
-                        <h3>My awesome project</h3>
-                        <div class="link-inner">
-                            <a href="#" target="_blank"><div class="btn-hover"></div></a><!--Link to your work-->
-                            <a href="#workModal8" class="my-work" data-toggle="modal"><div class="btn-more"></div></a><!--Link to modal-->
-                        </div>
-                    </div>
-                </div>
-                <img src="{{asset('img/work/4small.jpg')}}" class="img-responsive" alt="">
-            </div><!-- work tile end -->
-        </div>
-    </section>
-
-    <!--Quote section-->
-    <section class="quote">
-        <div class="quote-content">
-            <p>In the last 2 years, my life has completely changed.<br> I always think I am very lucky to have discovered my true talents.</p>
-        </div>
-    </section><!--Quote section end-->
+    {{--<section class="skills">--}}
+        {{--<div class="skills-content">--}}
+            {{--<div class="container">--}}
+                {{--<div class="row">--}}
+                    {{--<div class="col-lg-4 col-md-4 col-sm-6 text-center">--}}
+						{{--<span class="fa-stack fa-lg">--}}
+						  {{--<i class="fa fa-circle fa-stack-2x"></i>--}}
+						  {{--<i class="fa fa-pencil fa-stack-1x"  style="color:#38a1d2"></i>--}}
+						{{--</span>--}}
+                        {{--<h3>Some skill</h3>--}}
+                        {{--<p>And tell me you love me, come back and haunt me,--}}
+                            {{--Oh and I rush to the start.--}}
+                            {{--Running in circles, chasing tails,--}}
+                            {{--And coming back as we are.--}}
+                        {{--</p>--}}
+                    {{--</div>--}}
+                    {{--<div class="col-lg-4 col-md-4 col-sm-6 text-center">--}}
+						{{--<span class="fa-stack fa-lg">--}}
+						  {{--<i class="fa fa-circle fa-stack-2x"></i>--}}
+						  {{--<i class="fa fa-code fa-stack-1x"  style="color:#38a1d2"></i>--}}
+						{{--</span>--}}
+                        {{--<h3>Some other skill</h3>--}}
+                        {{--<p>Nobody said it was easy,--}}
+                            {{--oh its such a shame for us to part.--}}
+                            {{--Nobody said it was easy,--}}
+                            {{--No-one ever said it would be so hard.--}}
+                        {{--</p>--}}
+                    {{--</div>--}}
+                    {{--<div class="col-lg-4 col-md-4 col-sm-6 text-center">--}}
+						{{--<span class="fa-stack fa-lg">--}}
+						  {{--<i class="fa fa-circle fa-stack-2x"></i>--}}
+						  {{--<i class="fa fa-camera fa-stack-1x"  style="color:#38a1d2"></i>--}}
+						{{--</span>--}}
+                        {{--<h3>Oh look, one more skill</h3>--}}
+                        {{--<p>Now there's just the "ooh-ohh" part, so here's some lorem ipsum: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut semper euismod nisl eu rutrum.--}}
+                        {{--</p>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</section>--}}
 
     <!--Contact section-->
+
+    <!-- Contact section -->
     <section id="contact">
         <div class="container">
             <div class="row">
@@ -318,25 +193,47 @@
         </div>
     </section>
 
-    <!-- Portfolio Modal 1 -->
-    <div class="portfolio-modal modal fade" id="workModal1" tabindex="-1" role="dialog" aria-hidden="true">
+    <!--Quote section-->
+    {{--<section class="quote">--}}
+        {{--<div class="quote-content">--}}
+            {{--<p>In the last 2 years, my life has completely changed.<br> I always think I am very lucky to have discovered my true talents.</p>--}}
+        {{--</div>--}}
+    {{--</section><!--Quote section end-->--}}
+
+
+    {{--REDDIT MODAL--}}
+    <div class="portfolio-modal modal fade" id="redditModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="close-modal" data-dismiss="modal">
                 </div>
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-6 col-md-6">
+                        <div class="col-lg-12 col-md-12">
                             <div class="modal-body">
-                                <img class="img-responsive center-block" src="{{asset('img/work/5.jpg')}}" alt="your project">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="modal-body">
-                                <h2 class="red">Awesome project #1</h2>
-                                <p class="item-intro text-muted">Just some lorem ipsum</p>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-                                <span class="btn-launch-red"><a href="#" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span>
+                                <h2 class="red">Reddit</h2>
+                                <p class="item-intro text-muted">Usage instruction and guide:</p>
+
+                                <ol class="text-left">
+                                    <li>
+                                        <p>Find your subreddit post.</p>
+                                        <img src="{{asset('img/instructions/reddit_instruction_1.png')}}" class="img-responsive img-normalizer" alt="Reddit Link">
+                                    </li>
+                                    <li>
+                                        <p>Enter your subreddit post's link then the number of samples to be taken, tick agree to terms and conditions then click "Linkify!".</p>
+                                        <img src="{{asset('img/instructions/reddit_instruction_2.png')}}" class="img-responsive img-normalizer" alt="Reddit Link to Linkify">
+                                    </li>
+                                    <li>
+                                        <p>Wait your link to be processed.</p>
+                                        <img src="{{asset('img/instructions/reddit_instruction_3.png')}}" class="img-responsive img-normalizer" alt="Processing">
+                                    </li>
+                                    <li>
+                                        <p>Click the "PROCEED!" button</p>
+                                        <img src="{{asset('img/instructions/reddit_instruction_4.png')}}" class="img-responsive img-normalizer" alt="Proceed">
+                                    </li>
+                                </ol>
+
+                                <span class="btn-launch-red"><a href="{{url('/linkifier')}}" title="Linkify" target="_blank"><i class="fa fa-share-square-o"></i> Try it now!</a></span>
                                 <span class="btn-close-red" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
                             </div>
                         </div>
@@ -345,26 +242,39 @@
             </div>
         </div>
     </div>
-
-    <!-- Portfolio Modal 2 -->
-    <div class="portfolio-modal modal fade" id="workModal2" tabindex="-1" role="dialog" aria-hidden="true">
+    {{--YOUTUBE MODAL--}}
+    <div class="portfolio-modal modal fade" id="youtubeModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="close-modal" data-dismiss="modal">
                 </div>
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-6 col-md-6">
+                        <div class="col-lg-12 col-md-12">
                             <div class="modal-body">
-                                <img class="img-responsive center-block" src="{{asset('img/work/6.jpg')}}" alt="your project">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="modal-body">
-                                <h2 class="red">Awesome project #2</h2>
-                                <p class="item-intro text-muted">Just some lorem ipsum</p>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-                                <span class="btn-launch-red"><a href="#" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span>
+                                <h2 class="red">YouTube</h2>
+                                <p class="item-intro text-muted">Usage instruction and guide:</p>
+
+                                <ol class="text-left">
+                                    <li>
+                                        <p>Pick the YouTube video that you want to "Linkify".</p>
+                                        <img src="{{asset('img/instructions/youtube_instruction_1.png')}}" class="img-responsive img-normalizer" alt="Youtube Video">
+                                    </li>
+                                    <li>
+                                        <p>Enter your YouTube video's URL then the number of samples to be taken, tick agree to terms and conditions then click "Linkify!".</p>
+                                        <img src="{{asset('img/instructions/youtube_instruction_2.png')}}" class="img-responsive img-normalizer" alt="Youtube link to Linkify">
+                                    </li>
+                                    <li>
+                                        <p>Wait your link to be processed.</p>
+                                        <img src="{{asset('img/instructions/youtube_instruction_3.png')}}" class="img-responsive img-normalizer" alt="Processing">
+                                    </li>
+                                    <li>
+                                        <p>Click the "PROCEED!" button</p>
+                                        <img src="{{asset('img/instructions/youtube_instruction_4.png')}}" class="img-responsive img-normalizer" alt="Proceed">
+                                    </li>
+                                </ol>
+
+                                <span class="btn-launch-red"><a href="{{url('/linkifier')}}" title="Linkify" target="_blank"><i class="fa fa-share-square-o"></i> Try it now!</a></span>
                                 <span class="btn-close-red" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
                             </div>
                         </div>
@@ -373,83 +283,39 @@
             </div>
         </div>
     </div>
-
-    <!-- Portfolio Modal 3 -->
-    <div class="portfolio-modal modal fade" id="workModal3" tabindex="-1" role="dialog" aria-hidden="true">
+    {{--TWITTER MODAL--}}
+    <div class="portfolio-modal modal fade" id="twitterModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="close-modal" data-dismiss="modal">
                 </div>
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-6 col-md-6">
+                        <div class="col-lg-12 col-md-12">
                             <div class="modal-body">
-                                <img class="img-responsive center-block" src="{{asset('img/work/1.jpg')}}" alt="your project">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="modal-body">
-                                <h2 class="blue">Awesome project #3</h2>
-                                <p class="item-intro text-muted">Photo credits: <a href="https://www.flickr.com/photos/brettprice/" target="_blank">Brett Price</a></p>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br/>
-                                </p>
-                                <span class="btn-launch-blue"><a href="#" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span>
-                                <span class="btn-close-blue" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                                <h2 class="red">Twitter</h2>
+                                <p class="item-intro text-muted">Usage instruction and guide:</p>
 
-    <!-- Portfolio Modal 4 -->
-    <div class="portfolio-modal modal fade" id="workModal4" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="close-modal" data-dismiss="modal">
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6">
-                            <div class="modal-body">
-                                <img class="img-responsive center-block" src="{{asset('img/work/2.jpg')}}" alt="your project">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="modal-body">
-                                <h2 class="blue">Awesome project #4</h2>
-                                <p class="item-intro text-muted">Photo credits: <a href="https://www.flickr.com/photos/brettprice/" target="_blank">Brett Price</a></p>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-                                <span class="btn-launch-blue"><a href="#" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span>
-                                <span class="btn-close-blue" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                                <ol class="text-left">
+                                    <li>
+                                        <p>Search on Twitter and copy the Link of what you've searched.</p>
+                                        <img src="{{asset('img/instructions/twitter_instruction_1.png')}}" class="img-responsive img-normalizer" alt="Twitter Query">
+                                    </li>
+                                    <li>
+                                        <p>Enter your Twitter searched query's URL then the number of samples to be taken, tick agree to terms and conditions then click "Linkify!".</p>
+                                        <img src="{{asset('img/instructions/twitter_instruction_2.png')}}" class="img-responsive img-normalizer" alt="Twitter link to Linkify">
+                                    </li>
+                                    <li>
+                                        <p>Wait your link to be processed.</p>
+                                        <img src="{{asset('img/instructions/twitter_instruction_3.png')}}" class="img-responsive img-normalizer" alt="Processing">
+                                    </li>
+                                    <li>
+                                        <p>Click the "PROCEED!" button</p>
+                                        <img src="{{asset('img/instructions/twitter_instruction_4.png')}}" class="img-responsive img-normalizer" alt="Proceed">
+                                    </li>
+                                </ol>
 
-    <!-- Portfolio Modal 5 -->
-    <div class="portfolio-modal modal fade" id="workModal5" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="close-modal" data-dismiss="modal">
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6">
-                            <div class="modal-body">
-                                <img class="img-responsive center-block" src="{{asset('img/work/7.jpg')}}" alt="your project">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="modal-body">
-                                <h2 class="red">Awesome project #5</h2>
-                                <p class="item-intro text-muted">Just some lorem ipsum</p>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-                                <span class="btn-launch-red"><a href="#" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span>
+                                <span class="btn-launch-red"><a href="{{url('/linkifier')}}" title="Linkify" target="_blank"><i class="fa fa-share-square-o"></i> Try it now!</a></span>
                                 <span class="btn-close-red" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
                             </div>
                         </div>
@@ -458,83 +324,40 @@
             </div>
         </div>
     </div>
-
-    <!-- Portfolio Modal 6 -->
-    <div class="portfolio-modal modal fade" id="workModal6" tabindex="-1" role="dialog" aria-hidden="true">
+    {{--FORUM MODAL--}}
+    <div class="portfolio-modal modal fade" id="forumModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="close-modal" data-dismiss="modal">
                 </div>
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-6 col-md-6">
+                        <div class="col-lg-12 col-md-12">
                             <div class="modal-body">
-                                <img class="img-responsive center-block" src="{{asset('img/work/8.jpg')}}" alt="your project">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="modal-body">
-                                <h2 class="red">Awesome project #6</h2>
-                                <p class="item-intro text-muted">Just some lorem ipsum</p>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-                                <span class="btn-launch-red"><a href="#" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span>
+                                <h2 class="red">Forums</h2>
+                                <p class="item-intro text-muted">Usage instruction and guide:</p>
+
+                                <ol class="text-left">
+                                    <li>
+                                        <p>Pick a forum subject and copy the link of your selected forum.</p>
+                                        <img src="{{asset('img/instructions/forum_instruction_1.png')}}" class="img-responsive img-normalizer" alt="Forum Pick">
+                                    </li>
+                                    <li>
+                                        <p>Enter your Forum Discussion's URL then the number of samples to be taken, tick agree to terms and conditions then click "Linkify!".</p>
+                                        <img src="{{asset('img/instructions/forum_instruction_2.png')}}" class="img-responsive img-normalizer" alt="Forum link to Linkify">
+                                    </li>
+                                    <li>
+                                        <p>Wait your link to be processed.</p>
+                                        <img src="{{asset('img/instructions/forum_instruction_3.png')}}" class="img-responsive img-normalizer" alt="Processing">
+                                    </li>
+                                    <li>
+                                        <p>Click the "PROCEED!" button</p>
+                                        <img src="{{asset('img/instructions/forum_instruction_4.png')}}" class="img-responsive img-normalizer" alt="Proceed">
+                                    </li>
+                                </ol>
+
+                                <span class="btn-launch-red"><a href="{{url('/linkifier')}}" title="Linkify" target="_blank"><i class="fa fa-share-square-o"></i> Try it now!</a></span>
                                 <span class="btn-close-red" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Portfolio Modal 7 -->
-    <div class="portfolio-modal modal fade" id="workModal7" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="close-modal" data-dismiss="modal">
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6">
-                            <div class="modal-body">
-                                <img class="img-responsive center-block" src="{{asset('img/work/3.jpg')}}" alt="your project">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="modal-body">
-                                <h2 class="blue">Awesome project #7</h2>
-                                <p class="item-intro text-muted">Photo credits: <a href="https://www.flickr.com/photos/brettprice/" target="_blank">Brett Price</a></p>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-                                <span class="btn-launch-blue"><a href="#" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span>
-                                <span class="btn-close-blue" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Portfolio Modal 8 -->
-    <div class="portfolio-modal modal fade" id="workModal8" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="close-modal" data-dismiss="modal">
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6">
-                            <div class="modal-body">
-                                <img class="img-responsive center-block" src="{{asset('img/work/4.jpg')}}" alt="your project">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="modal-body">
-                                <h2 class="blue">Awesome project #8</h2>
-                                <p class="item-intro text-muted">Photo credits: <a href="https://www.flickr.com/photos/brettprice/" target="_blank">Brett Price</a></p>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-                                <span class="btn-launch-blue"><a href="#" title="Launch website" target="_blank"><i class="fa fa-share-square-o"></i> Launch</a></span>
-                                <span class="btn-close-blue" data-dismiss="modal"><i class="fa fa-times"></i> Close</span>
                             </div>
                         </div>
                     </div>

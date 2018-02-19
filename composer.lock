@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8700f203a66e64c9442dcc5d3fe276cd",
+    "content-hash": "92b429a89e30f918f664536c965153b7",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -686,6 +686,60 @@
                 "storage"
             ],
             "time": "2018-01-27T16:03:56+00:00"
+        },
+        {
+            "name": "mbarwick83/twitter-api",
+            "version": "2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mbarwick83/twitter-api.git",
+                "reference": "3eb7d938fb060c0f9094471a7996dccf604cf889"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mbarwick83/twitter-api/zipball/3eb7d938fb060c0f9094471a7996dccf604cf889",
+                "reference": "3eb7d938fb060c0f9094471a7996dccf604cf889",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "~5.1",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*",
+                "scrutinizer/ocular": "~1.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mbarwick83\\TwitterApi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mike Barwick",
+                    "email": "mike@barwickandco.com"
+                }
+            ],
+            "description": "Laravel 5.1 wrapper for the most popular PHP library for use with the Twitter OAuth REST API. https://github.com/abraham/twitteroauth",
+            "homepage": "https://github.com/mbarwick83/twitter-api",
+            "keywords": [
+                "api",
+                "laravel",
+                "oauth",
+                "rest",
+                "twitter"
+            ],
+            "time": "2017-10-17T21:44:24+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3904,16 +3958,16 @@
         },
         {
             "name": "symfony/thanks",
-            "version": "v1.0.5",
+            "version": "v1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/thanks.git",
-                "reference": "c757ee0c9dcfcc0e9e30fbbbdcadeb9dcc9aaaf4"
+                "reference": "9474ce305253c2f0bc20322ff8e9973cf25c9a94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/thanks/zipball/c757ee0c9dcfcc0e9e30fbbbdcadeb9dcc9aaaf4",
-                "reference": "c757ee0c9dcfcc0e9e30fbbbdcadeb9dcc9aaaf4",
+                "url": "https://api.github.com/repos/symfony/thanks/zipball/9474ce305253c2f0bc20322ff8e9973cf25c9a94",
+                "reference": "9474ce305253c2f0bc20322ff8e9973cf25c9a94",
                 "shasum": ""
             },
             "require": {
@@ -3943,7 +3997,7 @@
                 }
             ],
             "description": "Give thanks (in the form of a GitHub ⭐) to your fellow PHP package maintainers (not limited to Symfony components)!",
-            "time": "2018-01-26T10:44:34+00:00"
+            "time": "2018-02-02T13:47:40+00:00"
         },
         {
             "name": "theseer/tokenizer",

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-//use Twitter;
+use Twitter;
 use Illuminate\Http\Request;
 use Faker\Provider\File;
 
@@ -10,7 +10,12 @@ class TwitterController extends Controller
 {
     public function twitterUserTimeLine()
     {
-//        $data = Twitter::getUserTimeline(['count' => 10, 'format' => 'array']);
+        // TODO : APPLY TO HAVE A USER TIMELINE THERE
+        $data = Twitter::getUserTimeline([
+            'count' => 100,
+            'format' => 'array',
+            'screen_name' => 'CLR_n_Hues',
+        ]);
         return view('twitter',compact('data'));
     }
 
@@ -24,7 +29,7 @@ class TwitterController extends Controller
 
         if(!empty($request->images)){
             foreach ($request->images as $key => $value) {
-//                $uploaded_media = Twitter::uploadMedia(['media' => File::get($value->getRealPath())]);
+                $uploaded_media = Twitter::uploadMedia(['media' => File::get($value->getRealPath())]);
                 if(!empty($uploaded_media)){
                     $newTwitte['media_ids'][$uploaded_media->media_id_string] = $uploaded_media->media_id_string;
                 }
@@ -32,7 +37,7 @@ class TwitterController extends Controller
         }
 
 
-//        $twitter = Twitter::postTweet($newTwitte);
+        $twitter = Twitter::postTweet($newTwitte);
 
 
         return back();
