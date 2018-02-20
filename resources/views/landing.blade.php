@@ -367,7 +367,7 @@
     </div>
 
     <footer>
-        <p>© 2015 your name - All rights reserved | Developed by <a href="http://www.fasusthemes.net" target="_blank"><img src="{{asset('img/fsthemes.png')}}" alt="Fasus Themes"></a></p>
+        <p>© 2018 SAMUEL API - All rights reserved | Developed by SAMUEL API Team</p>
     </footer>
 
 </div>

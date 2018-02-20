@@ -63,6 +63,7 @@
 @endsection
 
 @section('content')
+<div style="display:none" id="result_page">
     <div class="wrapper">
         <header class="main-header">
             <nav class="navbar navbar-static-top">
@@ -273,6 +274,22 @@
             reserved.
         </footer>
     </div>
+</div>
+
+<div id="loading_page">
+    <div style="margin-top:10%" class="row">
+        <div class="col-md-12">
+            <img class="center-block" src="{{ asset('img/gif/gears.gif') }}">
+        </div>
+    </div>
+    <div class="row">
+        <div style="text-align:center" class="col-md-12">
+            <h1>PLEASE WAIT . . .</h1>
+            <h2>SAMUEL is analyzing the sentiments now.</h2>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('js')
@@ -280,6 +297,7 @@
     <script src="{{asset('/bower_components/morris.js/morris.min.js')}}"></script>
     <script src="{{asset('/js/jquery.easyPaginate.js')}}"></script>
     <script>
+
         $(function(){
             $('#box-polarity').boxWidget('toggle');
             $('#box-dashboard').boxWidget('toggle');
@@ -335,13 +353,13 @@
         };
         $.ajax({
             url: "{{ config('app.samuel_core') }}" +
-            "?KEY=O93wdl13DyudQkSdFIIrq9kc0xhLUPV6XPMz6btr",
+            "?KEY=nipMZqCFGgJcnWsE1vpIjcNdzkyOVyoZjdE2Eu5e",
             type: 'POST',
             data: JSON.stringify(data),
             contentType:"application/json",
             success:function(samuel) {
                 // console.log(samuel);
-
+                
                 // REQUEST TIME
                 var request_time = new Date().getTime() - start_time;
                 $('#response-time').html("It took <b>"+(request_time/1000)+"<b> seconds to process your request.");
@@ -382,6 +400,9 @@
                 else{
                     $("#corpus-polarity").html("&nbsp;"+samuel.percentage.neutral+"&nbsp;<i class='fa fa-meh-o' aria-hidden='true'></i> &nbsp;Neutral").addClass("text text-primary");
                 }
+
+                $("#loading_page").hide();
+                $("#result_page").fadeIn();
             }
         });
     </script>
