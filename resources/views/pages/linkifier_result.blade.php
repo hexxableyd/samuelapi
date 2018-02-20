@@ -295,6 +295,7 @@
         <div style="text-align:center" class="col-md-12">
             <img width="30%" class="center-block" src="{{ asset('img/robot-msg-error.png') }}">
             <h1>Something went wrong. Please try again.</h1>
+            <br>
             <button onclick="goBack()" class="btn btn-success btn-lg"><b>Go Back To Linkifier</b></button>
         </div>
     </div>
