@@ -59,11 +59,21 @@
         #creatorContent{
             padding: 0 10% 0 10%;
         }
+        .overlay{
+            opacity:0.8;
+            background-color:#F9F9F9;
+            position:fixed;
+            width:100%;
+            height:100%;
+            top:0px;
+            left:0px;
+            z-index:1000;
+        }
     </style>
 @endsection
 
 @section('content')
-<div style="display:none" id="result_page">
+<div id="result_page">
     <div class="wrapper">
         <header class="main-header">
             <nav class="navbar navbar-static-top">
@@ -276,7 +286,7 @@
     </div>
 </div>
 
-<div id="loading_page">
+<div id="loading_page" class="overlay">
     <div style="margin-top:10%" class="row">
         <div class="col-md-12">
             <img class="center-block" src="{{ asset('img/gif/gears.gif') }}">
@@ -290,7 +300,7 @@
     </div>
 </div>
 
-<div style="display:none" id="error_page">
+<div style="display:none" id="error_page" class="overlay">
     <div style="margin-top:5%" class="row">
         <div style="text-align:center" class="col-md-12">
             <img width="30%" class="center-block" src="{{ asset('img/robot-msg-error.png') }}">
@@ -308,16 +318,7 @@
     <script src="{{asset('/bower_components/morris.js/morris.min.js')}}"></script>
     <script src="{{asset('/js/jquery.easyPaginate.js')}}"></script>
     <script>
-        getProgress()
-        var interval = setInterval(getProgress,1000);
-        function getProgress(){
-            $.ajax({
-            url: "{{ config('app.samuel_core_progress') }}",
-            success: function(progress){
-                $("#progress").text(progress+" %")
-            }
-            });
-        }
+        
 
         $(function(){
             $('#box-polarity').boxWidget('toggle');
@@ -411,8 +412,7 @@
                 }
                 
                 clearInterval(interval);
-                $("#loading_page").hide();
-                $("#result_page").fadeIn();
+                $("#loading_page").fadeOut();
             },
             error: function(xmlhttprequest, textstatus, message) {
                 clearInterval(interval);
@@ -420,6 +420,17 @@
                 $("#error_page").fadeIn();
             }
         });
+
+        getProgress()
+        var interval = setInterval(getProgress,1000);
+        function getProgress(){
+            $.ajax({
+            url: "{{ config('app.samuel_core_progress') }}",
+            success: function(progress){
+                $("#progress").text(progress+" %")
+            }
+            });
+        }
 
         function goBack(){
             window.history.back();
