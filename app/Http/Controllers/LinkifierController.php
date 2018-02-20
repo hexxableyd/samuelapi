@@ -83,7 +83,7 @@ class LinkifierController extends Controller
                 $crawl = new Crawl();
                 foreach($json_object['replies'] as $reps)
                 {
-                    $corpus .= " " . $crawl->regStr($reps['content'], true);
+                    $corpus .= ". " . $crawl->regStr($reps['content'], true);
 //                    array_push($corpus, $crawl->remNL($reps['content']));
                 }
 

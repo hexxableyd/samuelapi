@@ -308,16 +308,7 @@
     <script src="{{asset('/bower_components/morris.js/morris.min.js')}}"></script>
     <script src="{{asset('/js/jquery.easyPaginate.js')}}"></script>
     <script>
-        getProgress()
-        var interval = setInterval(getProgress,1000);
-        function getProgress(){
-            $.ajax({
-            url: "{{ config('app.samuel_core_progress') }}",
-            success: function(progress){
-                $("#progress").text(progress+" %")
-            }
-            });
-        }
+
 
         $(function(){
             $('#box-polarity').boxWidget('toggle');
@@ -358,16 +349,17 @@
                 }
             }
         @endif
-
+        console.log("{{$corpus}}");
         var start_time = new Date().getTime();
         data = {
             'text':"{{$corpus}}",
+            'query':"{{$creator['title']}}",
             'summary_length':8,
             'visualize': true,
             'dashboard_style': false
         };
         $.ajax({
-            url: "{{ config('app.samuel_core') }}" + "?KEY={{ config('app.samuel_api_ip') }}",
+            url: "{{ config('app.samuel_core') }}" + "?KEY={{ config('app.samuel_api_key') }}",
             type: 'POST',
             data: JSON.stringify(data),
             contentType:"application/json",
@@ -376,40 +368,42 @@
                 var request_time = new Date().getTime() - start_time;
                 $('#response-time').html("It took <b>"+(request_time/1000)+"<b> seconds to process your request.");
 
-                // CORPUS SUMMARY
-                $("#corpus-summary").html(samuel.summarized_text);
-                $('#box-summary').boxWidget('toggle');
-
-                // PERCENT SHIT
-                $('#box-polarity').boxWidget('toggle');
                 console.log(samuel);
-                var varpositive = parseFloat(samuel.percentage.positive.replace(/\D/g,''))/100.0;
-                var varnegative = parseFloat(samuel.percentage.negative.replace(/\D/g,''))/100.0;
-                var varneutral = parseFloat(samuel.percentage.neutral.replace(/\D/g,''))/100.0;
-                new Morris.Donut({
-                    element: 'sales-chart',
-                    resize: true,
-                    colors: ["#12cc4a", "#cc1212", "#595959"],
-                    data: [
-                        {label: "Positive Percentage", value: varpositive},
-                        {label: "Negative Percentage", value: varnegative},
-                        {label: "Neutral Percentage", value: varneutral}
-                    ],
-                    hideHover: 'auto'
-                });
 
-                // DASHBOARD
-                $("#corpus-dashboard").html(samuel.dashboard);
-                if (samuel.polarity==="positive") {
-                    $("#corpus-polarity").html("&nbsp;"+samuel.percentage.positive+"&nbsp;<i class='fa fa-smile-o' aria-hidden='true'></i> &nbsp;Positive").addClass("text text-success");
-                }
-                else if(samuel.polarity==="negative"){
-                    $("#corpus-polarity").html("&nbsp;"+samuel.percentage.negative+"&nbsp;<i class='fa fa-frown-o' aria-hidden='true'></i> &nbsp;Negative").addClass("text text-danger");
-                }
-                else{
-                    $("#corpus-polarity").html("&nbsp;"+samuel.percentage.neutral+"&nbsp;<i class='fa fa-meh-o' aria-hidden='true'></i> &nbsp;Neutral").addClass("text text-primary");
-                }
-                
+                // // CORPUS SUMMARY
+                // $("#corpus-summary").html(samuel.summarized_text);
+                // $('#box-summary').boxWidget('toggle');
+                //
+                // // PERCENT SHIT
+                // $('#box-polarity').boxWidget('toggle');
+                // console.log(samuel);
+                // var varpositive = parseFloat(samuel.percentage.positive.replace(/\D/g,''))/100.0;
+                // var varnegative = parseFloat(samuel.percentage.negative.replace(/\D/g,''))/100.0;
+                // var varneutral = parseFloat(samuel.percentage.neutral.replace(/\D/g,''))/100.0;
+                // new Morris.Donut({
+                //     element: 'sales-chart',
+                //     resize: true,
+                //     colors: ["#12cc4a", "#cc1212", "#595959"],
+                //     data: [
+                //         {label: "Positive Percentage", value: varpositive},
+                //         {label: "Negative Percentage", value: varnegative},
+                //         {label: "Neutral Percentage", value: varneutral}
+                //     ],
+                //     hideHover: 'auto'
+                // });
+                //
+                // // DASHBOARD
+                // $("#corpus-dashboard").html(samuel.dashboard);
+                // if (samuel.polarity==="positive") {
+                //     $("#corpus-polarity").html("&nbsp;"+samuel.percentage.positive+"&nbsp;<i class='fa fa-smile-o' aria-hidden='true'></i> &nbsp;Positive").addClass("text text-success");
+                // }
+                // else if(samuel.polarity==="negative"){
+                //     $("#corpus-polarity").html("&nbsp;"+samuel.percentage.negative+"&nbsp;<i class='fa fa-frown-o' aria-hidden='true'></i> &nbsp;Negative").addClass("text text-danger");
+                // }
+                // else{
+                //     $("#corpus-polarity").html("&nbsp;"+samuel.percentage.neutral+"&nbsp;<i class='fa fa-meh-o' aria-hidden='true'></i> &nbsp;Neutral").addClass("text text-primary");
+                // }
+
                 clearInterval(interval);
                 $("#loading_page").hide();
                 $("#result_page").fadeIn();
@@ -420,6 +414,18 @@
                 $("#error_page").fadeIn();
             }
         });
+
+        getProgress();
+        var interval = setInterval(getProgress,1000);
+        function getProgress(){
+            $.ajax({
+                url: "{{ config('app.samuel_core_progress') }}",
+                success: function(progress){
+                    console.log(progress);
+                    $("#progress").text(progress+" %")
+                }
+            });
+        }
 
         function goBack(){
             window.history.back();

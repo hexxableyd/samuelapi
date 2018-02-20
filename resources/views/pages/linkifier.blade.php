@@ -237,6 +237,7 @@
                                 $('#success-div').show("fast","swing");
                                 $('#success-msg').html(data.message);
                                 var link_data = [];
+                                // console.log(data);
                                 if(data.website === 'reddit')
                                 {
                                     link_data = {

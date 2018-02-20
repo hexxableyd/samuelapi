@@ -457,7 +457,8 @@ class WebCrawlerController extends Controller
     // YOUTUBE FUNCTIONS
     public function getObjectYoutube($videoid, $title=true, $nextPageToken="")
     {
-        $apikey = env('YOUTUBE_API_KEY');
+//        $apikey = env('YOUTUBE_API_KEY');
+        $apikey = "AIzaSyBFactY2wGBHiSQBh4pjw1Im2uuXx3Qoaw";
         $result = array();
         try{
             // REQUEST ON COMMENT THREADS
