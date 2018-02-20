@@ -391,6 +391,9 @@
 
                 $("#loading_page").hide();
                 $("#result_page").fadeIn();
+            },
+            error: function(xmlhttprequest, textstatus, message) {
+                alert(textstatus);
             }
         });
     </script>
