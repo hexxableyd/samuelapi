@@ -290,6 +290,16 @@
     </div>
 </div>
 
+<div style="display:none" id="error_page">
+    <div style="margin-top:5%" class="row">
+        <div style="text-align:center" class="col-md-12">
+            <img width="30%" class="center-block" src="{{ asset('img/robot-msg-error.png') }}">
+            <h1>Something went wrong. Please try again.</h1>
+            <button onclick="goBack()" class="btn btn-success btn-lg"><b>Go Back To Linkifier</b></button>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('js')
@@ -297,7 +307,9 @@
     <script src="{{asset('/bower_components/morris.js/morris.min.js')}}"></script>
     <script src="{{asset('/js/jquery.easyPaginate.js')}}"></script>
     <script>
-
+        function goBack(){
+            window.history.back();
+        }
         $(function(){
             $('#box-polarity').boxWidget('toggle');
             $('#box-dashboard').boxWidget('toggle');
@@ -393,7 +405,8 @@
                 $("#result_page").fadeIn();
             },
             error: function(xmlhttprequest, textstatus, message) {
-                alert(textstatus);
+                $("#loading_page").hide();
+                $("#error_page").fadeIn();
             }
         });
     </script>
