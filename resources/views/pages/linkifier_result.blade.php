@@ -69,6 +69,14 @@
             left:0px;
             z-index:1000;
         }
+
+        table thead tr td{
+            text-align:center;
+            font-weight: bold;
+        }
+        table tbody tr td{
+            text-align:center;
+        }
     </style>
 @endsection
 
@@ -270,6 +278,41 @@
                                 </div>
                             </div>
                         </div>
+                        {{--  TEXT CLASSIFICATION  --}}
+                        <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box box-success" id="box-classification">
+                                        <div class="box-header with-border">
+                                            <div class="user-block text-center">
+                                                <h3>Text Classification</h3>
+                                            </div>
+                                            <div class="box-tools">
+                                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="box-body" style="white-space: pre-line" id="text-classification">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <td>POSITIVE</td>
+                                                        <td>NEUTRAL</td>
+                                                        <td>NEGATIVE</td>
+                                                    </tr>
+                                                    
+                                                </thead>
+                                                <tbody id="classification-table-body">
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div>
+                                            <div class="box-footer">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                     </div>
                 </div>
             </section>
@@ -322,6 +365,7 @@
             $('#box-polarity').boxWidget('toggle');
             $('#box-dashboard').boxWidget('toggle');
             $('#box-summary').boxWidget('toggle');
+            $('#box-classification').boxWidget('toggle');
             var count = parseInt({{count($replies)}})/10;
             if( count < 10 )
             {
@@ -378,39 +422,79 @@
 
                 console.log(samuel);
 
-                // // CORPUS SUMMARY
-                // $("#corpus-summary").html(samuel.summarized_text);
-                // $('#box-summary').boxWidget('toggle');
-                //
-                // // PERCENT SHIT
-                // $('#box-polarity').boxWidget('toggle');
-                // console.log(samuel);
-                // var varpositive = parseFloat(samuel.percentage.positive.replace(/\D/g,''))/100.0;
-                // var varnegative = parseFloat(samuel.percentage.negative.replace(/\D/g,''))/100.0;
-                // var varneutral = parseFloat(samuel.percentage.neutral.replace(/\D/g,''))/100.0;
-                // new Morris.Donut({
-                //     element: 'sales-chart',
-                //     resize: true,
-                //     colors: ["#12cc4a", "#cc1212", "#595959"],
-                //     data: [
-                //         {label: "Positive Percentage", value: varpositive},
-                //         {label: "Negative Percentage", value: varnegative},
-                //         {label: "Neutral Percentage", value: varneutral}
-                //     ],
-                //     hideHover: 'auto'
-                // });
-                //
-                // // DASHBOARD
-                // $("#corpus-dashboard").html(samuel.dashboard);
+                // CORPUS SUMMARY
+                $("#corpus-summary").html(samuel.summarized_text);
+                $('#box-summary').boxWidget('toggle');
+                
+                // PERCENT SHIT
+                $('#box-polarity').boxWidget('toggle');
+                console.log(samuel);
+                var varpositive = samuel.total_score.percentage.positive;
+                var varnegative = samuel.total_score.percentage.negative;
+                var varneutral = samuel.total_score.percentage.neutral;
+
+                var totalPosNeg = varpositive + varnegative;
+                var finalPos = ((varpositive/totalPosNeg)*100).toFixed(2);
+                var finalNeg = ((varnegative/totalPosNeg)*100).toFixed(2);
+
+                new Morris.Donut({
+                    element: 'sales-chart',
+                    resize: true,
+                    colors: ["#12cc4a", "#cc1212", "#595959"],
+                    data: [
+                        {label: "Positive Percentage", value: finalPos},
+                        {label: "Negative Percentage", value: finalNeg}
+                    ],
+                    hideHover: 'auto'
+                });
+
+                if(finalPos>finalNeg){
+                    $("#corpus-polarity").html("&nbsp;"+finalPos+"&nbsp;%<i class='fa fa-smile-o' aria-hidden='true'></i> &nbsp;Positive").addClass("text text-success");
+                }
+                else{
+                    $("#corpus-polarity").html("&nbsp;"+finalNeg+"&nbsp;%<i class='fa fa-frown-o' aria-hidden='true'></i> &nbsp;Negative").addClass("text text-danger");
+                }
+
                 // if (samuel.polarity==="positive") {
-                //     $("#corpus-polarity").html("&nbsp;"+samuel.percentage.positive+"&nbsp;<i class='fa fa-smile-o' aria-hidden='true'></i> &nbsp;Positive").addClass("text text-success");
+                //     $("#corpus-polarity").html("&nbsp;"+samuel.total_score.percentage.positive+"&nbsp;<i class='fa fa-smile-o' aria-hidden='true'></i> &nbsp;Positive").addClass("text text-success");
                 // }
                 // else if(samuel.polarity==="negative"){
-                //     $("#corpus-polarity").html("&nbsp;"+samuel.percentage.negative+"&nbsp;<i class='fa fa-frown-o' aria-hidden='true'></i> &nbsp;Negative").addClass("text text-danger");
+                //     $("#corpus-polarity").html("&nbsp;"+samuel.total_score.percentage.negative+"&nbsp;<i class='fa fa-frown-o' aria-hidden='true'></i> &nbsp;Negative").addClass("text text-danger");
                 // }
                 // else{
-                //     $("#corpus-polarity").html("&nbsp;"+samuel.percentage.neutral+"&nbsp;<i class='fa fa-meh-o' aria-hidden='true'></i> &nbsp;Neutral").addClass("text text-primary");
+                //     $("#corpus-polarity").html("&nbsp;"+samuel.total_score.percentage.neutral+"&nbsp;<i class='fa fa-meh-o' aria-hidden='true'></i> &nbsp;Neutral").addClass("text text-primary");
                 // }
+                
+                // DASHBOARD
+                $("#corpus-dashboard").html(samuel.dashboard);
+                
+
+                $('#box-classification').boxWidget('toggle');
+                var classificationTable = "";
+                for(var i = 0 ; i<samuel.score.length ; i++){
+                    posDescriptors ="";
+                    samuel.descriptors[i].pos.forEach(function(word) {
+                        posDescriptors += word +", ";
+                    });
+                    neuDescriptors ="";
+                    samuel.descriptors[i].neu.forEach(function(word) {
+                        neuDescriptors += word +", ";
+                    });
+                    negDescriptors ="";
+                    samuel.descriptors[i].neg.forEach(function(word) {
+                        negDescriptors += word +", ";
+                    });
+                    
+                    classificationTable += ""
+                    +"<tr>"
+                    +"<td><b>"+samuel.score[i].pos+"</b><br>"+posDescriptors+"</td>"
+                    +"<td><b>"+samuel.score[i].neu+"</b><br>"+neuDescriptors+"</td>"
+                    +"<td><b>"+samuel.score[i].neg+"</b><br>"+negDescriptors+"</td>"
+                    +"</tr>";
+                }
+                $("#classification-table-body").html(classificationTable);
+
+
 
                 clearInterval(interval);
                 $("#loading_page").fadeOut();
