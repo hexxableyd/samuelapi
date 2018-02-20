@@ -284,7 +284,7 @@
     </div>
     <div class="row">
         <div style="text-align:center" class="col-md-12">
-            <h1>PLEASE WAIT . . .</h1>
+            <h1>PLEASE WAIT . . . &nbsp;<span id="progress"></span></h1>
             <h2>SAMUEL is analyzing the sentiments now.</h2>
         </div>
     </div>
@@ -308,9 +308,17 @@
     <script src="{{asset('/bower_components/morris.js/morris.min.js')}}"></script>
     <script src="{{asset('/js/jquery.easyPaginate.js')}}"></script>
     <script>
-        function goBack(){
-            window.history.back();
+        getProgress()
+        var interval = setInterval(getProgress,1000);
+        function getProgress(){
+            $.ajax({
+            url: "{{ config('app.samuel_core_progress') }}",
+            success: function(progress){
+                $("#progress").text(progress+" %")
+            }
+            });
         }
+
         $(function(){
             $('#box-polarity').boxWidget('toggle');
             $('#box-dashboard').boxWidget('toggle');
@@ -401,14 +409,20 @@
                 else{
                     $("#corpus-polarity").html("&nbsp;"+samuel.percentage.neutral+"&nbsp;<i class='fa fa-meh-o' aria-hidden='true'></i> &nbsp;Neutral").addClass("text text-primary");
                 }
-
+                
+                clearInterval(interval);
                 $("#loading_page").hide();
                 $("#result_page").fadeIn();
             },
             error: function(xmlhttprequest, textstatus, message) {
+                clearInterval(interval);
                 $("#loading_page").hide();
                 $("#error_page").fadeIn();
             }
         });
+
+        function goBack(){
+            window.history.back();
+        }
     </script>
 @endsection

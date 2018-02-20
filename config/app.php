@@ -18,6 +18,7 @@ return [
 
     'samuel_core' => "http://192.168.43.233:63342/samuel_api",
     'samuel_api_ip' => "0mbIjzCz1JFkhEeDpkDNYTHgYzmJyogbbpOU1rqc",
+    'samuel_core_progress' => "http://192.168.1.14:63343/",
 
     /*
     |--------------------------------------------------------------------------
