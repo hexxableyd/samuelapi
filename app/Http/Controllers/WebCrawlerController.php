@@ -17,40 +17,53 @@ class WebCrawlerController extends Controller
                     case 'reddit':
                         // GETS OBJECT FROM REDDIT URL
                         $json = $this->getObjectReddit($web['link']);
-
                         if ($json['success']) {
-                            // DECODES THE URL TO GET THE JSON ARRAY
-                            $web['object'] = json_decode($json['object']);
+                            try{
+                                // DECODES THE URL TO GET THE JSON ARRAY
+                                $web['object'] = json_decode($json['object']);
+                                // GETS CREATOR DATA FROM OBJECT
+                                $reddit_creator = $web['object'][0]->data->children;
+                                $date = new \DateTime();
+                                $date->setTimestamp($reddit_creator[0]->data->created);
+                                $web['creator'] = array(
+                                    'theme' => 'skin-red',
+                                    'icon' => '/img/ico/reddit.svg',
+                                    'title' => $this->regStr($reddit_creator[0]->data->title),
+                                    'content' => $this->regStr($reddit_creator[0]->data->selftext),
+                                    'author' => $this->regStr($reddit_creator[0]->data->author),
+                                    'author-link' => 'https://www.reddit.com/user/' . $reddit_creator[0]->data->author,
+                                    'permalink' => $reddit_creator[0]->data->permalink,
+                                    'upvote' => $reddit_creator[0]->data->ups,
+                                    'date' => $date->format('Y-m-d')
+                                );
+                                if (!empty($reddit_creator[0]->data->preview)) {
+                                    $web['creator']['img-url'] = $reddit_creator[0]->data->preview->images[0]->source->url;
+                                }
+                                // ATTEMPTS TO GET REPLY DATA FROM OBJECT
+                                $reply = $this->getRepliesReddit($web['object'][1]);
+                                if($reply['status'])
+                                {
+                                    // IF SUCCESSFUL, CUTS EXCESS DATA
+                                    $web['replies'] = $reply['replies'];
+                                    if(count($web['replies']) > $numposts)
+                                    {
+                                        $web['replies'] = array_slice($web['replies'], 0, $numposts);
+                                    }
 
-                            // GETS CREATOR DATA FROM OBJECT
-                            $reddit_creator = $web['object'][0]->data->children;
-                            $date = new \DateTime();
-                            $date->setTimestamp($reddit_creator[0]->data->created);
-                            $web['creator'] = array(
-                                'theme' => 'skin-red',
-                                'icon' => '/img/ico/reddit.svg',
-                                'title' => $this->regStr($reddit_creator[0]->data->title),
-                                'content' => $this->regStr($reddit_creator[0]->data->selftext),
-                                'author' => $this->regStr($reddit_creator[0]->data->author),
-                                'author-link' => 'https://www.reddit.com/user/' . $reddit_creator[0]->data->author,
-                                'permalink' => $reddit_creator[0]->data->permalink,
-                                'upvote' => $reddit_creator[0]->data->ups,
-                                'date' => $date->format('Y-m-d')
-                            );
-                            if (!empty($reddit_creator[0]->data->preview)) {
-                                $web['creator']['img-url'] = $reddit_creator[0]->data->preview->images[0]->source->url;
+                                    // THE RETURN REPLY IF SUCCESSFUL
+                                    $web['message'] = "<b>" . $web['creator']['title'] . "</b>";
+                                    $web['message'] .= "<br>by <i>" . $web['creator']['author'] . "</i>";
+                                }
+                                else
+                                {
+                                    $web['success'] = $reply['status'];
+                                    $web['errors'] = $reply['errors'];
+                                }
                             }
-
-                            // GETS REPLY DATA FROM OBJECT
-                            $web['replies'] = $this->getRepliesReddit($web['object'][1]);
-                            if(count($web['replies']) > $numposts)
-                            {
-                                $web['replies'] = array_slice($web['replies'], 0, $numposts);
+                            catch(\Exception $e){
+                                $web['success'] = FALSE;
+                                $web['errors'] = "Don't worry, it just seems like there's some error.<br><em>LINK: ".$web['link']."</em><br><b>ERROR CODE: ".$e->getMessage()."</b>";
                             }
-
-                            // THE RETURN REPLY IF SUCCESSFUL
-                            $web['message'] = "<b>" . $web['creator']['title'] . "</b>";
-                            $web['message'] .= "<br>by <i>" . $web['creator']['author'] . "</i>";
                         } else {
                             $web['success'] = FALSE;
                             $web['errors'] = $json['errors'];
@@ -59,10 +72,8 @@ class WebCrawlerController extends Controller
                     case 'youtube':
                         // EXPLODES THE LINK TO GET THE VIDEO ID
                         $vidID = explode("?v=", $web['link']);
-
                         // GETS THE VIDEO OBJECT FROM URL BY VIDEO ID
                         $json = $this->getObjectYoutube($vidID[1]);
-
                         if ($json['success']) {
                             // GETS VIDEO CREATOR DATA FROM OBJECT
                             $video_creator = json_decode($json['object-creator']);
@@ -78,7 +89,6 @@ class WebCrawlerController extends Controller
                                 'upvote' => "N/A",
                                 'date' => date('Y-m-d', strtotime($video_creator->items[0]->snippet->publishedAt))
                             );
-
                             // GETS COMMENT THREAD DATA FROM OBJECT
                             $video_comments = json_decode($json['object-comments']);
                             $web['replies'] = $this->getRepliesYoutube($video_comments);
@@ -92,16 +102,12 @@ class WebCrawlerController extends Controller
                             }
                             catch (\Exception $e)
                             {
-//                                $web['success'] = FALSE;
-//                                $web['errors'] = $video_comments->nextPageToken;
-                                // ERROR CODE : COMMENT RECURSION ERROR ; TYPE: YOUTUBE
-                                break;
+//                              break;
                             }
                             if(count($web['replies']) > $numposts)
                             {
                                 $web['replies'] = array_slice($web['replies'], 0, $numposts);
                             }
-
                             // THE RETURN REPLY IF SUCCESSFUL
                             $web['message'] = "<b>" . $web['creator']['title'] . "</b>";
                             $web['message'] .= "<br>by <i>" . $web['creator']['author'] . "</i>";
@@ -143,7 +149,6 @@ class WebCrawlerController extends Controller
                                         'upvote' => "N/A",
                                         'date' => date('Y-m-d')
                                     );
-
                                     // GETS TWITTER THREAD FROM JSON
                                     $web['replies'] = array();
                                     foreach ($web['object']->statuses as $threads)
@@ -228,6 +233,49 @@ class WebCrawlerController extends Controller
                             $web['errors'] = $json['errors'];
                         }
                         break;
+                    case 'forum.generic':
+                        // GETS OBJECT FROM FORUM URL
+                        $json = $this->getObjectDissBot($web['link']);
+
+                        if ($json['success']) {
+                            // DECODES THE URL TO GET THE JSON ARRAY
+                            $web['object'] = json_decode($json['object']);
+
+                            // GETS CREATOR DATA FROM OBJECT
+                            $web['creator'] = array(
+                                'theme' => 'skin-red',
+                                'icon' => '/img/ico/discussion.png',
+                                'title' => $this->regStr($web['object']->objects[0]->title),
+                                'content' => "",
+                                'author' => "Author",
+                                'author-link' => $web['link'],
+                                'permalink' => $web['link'],
+                                'upvote' => "N/A",
+                                'date' => date('Y-m-d')
+                            );
+
+                            // GETS REPLY DATA FROM OBJECT
+                            $web['replies'] = array();
+                            foreach($web['object']->objects[0]->posts as $posts)
+                            {
+                                array_push($web['replies'], array(
+                                    'content' => $this->regStr($posts->text),
+                                    'author' => $this->regStr($posts->author),
+                                    'date' => $posts->date,
+                                ));
+                            }
+//                            if(count($web['replies']) > $numposts)
+//                            {
+//                                $web['replies'] = array_slice($web['replies'], 0, $numposts);
+//                            }
+
+                            // THE RETURN REPLY IF SUCCESSFUL
+                            $web['message'] = "<b>" . $web['creator']['title'] . "</b>";
+                        } else {
+                            $web['success'] = FALSE;
+                            $web['errors'] = $json['errors'];
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -283,9 +331,14 @@ class WebCrawlerController extends Controller
         }
         else if((strpos(strtoupper(parse_url($result['link'], PHP_URL_HOST)),"FACEBOOK")!==FALSE)) {
             if((strpos(strtoupper($result['link']),"/POSTS/")!=FALSE)) {
-                $result['success'] = TRUE;
-                $result['message'] = "Your link is a Facebook Link!";
-                $result['website'] = "facebook";
+//                $result['success'] = TRUE;
+//                $result['message'] = "Your link is a Facebook Link!";
+//                $result['website'] = "facebook";
+
+                $result['success'] = FALSE;
+                $result['errors'] = 'Sorry, but it seems like this specific Forum is not yet supported :(';
+
+                $result['website'] = NULL;
             }
             else
             {
@@ -327,9 +380,17 @@ class WebCrawlerController extends Controller
                 $result['success'] = FALSE;
                 $result['errors'] = 'Sorry, but it seems like this specific Forum is not yet supported :(';
                 $result['website'] = NULL;
+
+//                $result['success'] = TRUE;
+//                $result['message'] = 'Your link is a Forum Link!';
+//                $result['website'] = 'forum.generic';
             }
         }
         else{
+//            $result['success'] = TRUE;
+//            $result['message'] = 'Your link is a Forum Link!';
+//            $result['website'] = 'forum.generic';
+
             $result['success'] = FALSE;
             $result['errors'] = 'It seems like '.parse_url($result['link'], PHP_URL_HOST)." is not supported yet! :(";
             $result['website'] = NULL;
@@ -347,13 +408,9 @@ class WebCrawlerController extends Controller
             $result['success'] = TRUE;
             $result['object'] = file_get_contents($link.".json");
         }
-        catch (\RuntimeException $e){
-            $result['success'] = FALSE;
-            $result['errors'] = "Don't worry, it just seems like there's some error.\nERROR CODE: Runtime Error";
-        }
         catch (\Exception $e){
             $result['success'] = FALSE;
-            $result['errors'] = "Don't worry, it just seems like there's some error.\nERROR CODE: Exception Error";
+            $result['errors'] = "Don't worry, it just seems like there's some error.<br><b>ERROR CODE: 404 Your Link is not Valid</b>";
         }
         finally{
             return $result;
@@ -363,31 +420,44 @@ class WebCrawlerController extends Controller
     {
         $reddit_replies = $object->data->children;
         $replies = array();
-        foreach($reddit_replies as $rep)
-        {
-            if ($rep->kind === 't1' && $rep->data->body !== "[deleted]")
+        try{
+            $replies['status'] = TRUE;
+            $replies['replies'] = array();
+            foreach($reddit_replies as $rep)
             {
-                $date = new \DateTime();
-                $date->setTimestamp($rep->data->created);
-                array_push($replies, array(
-                    'content' => $this->regStr($rep->data->body),
-                    'author' => $this->regStr($rep->data->author),
-                    'date' => $date->format('Y-m-d')
-                ));
-                if($rep->data->replies != NULL && $rep->data->replies !== "")
+                if ($rep->kind === 't1' && $rep->data->body !== "[deleted]")
                 {
-                    $reps = $this->getRepliesReddit($rep->data->replies);
-                    $replies = array_merge($replies, $reps);
+                    $date = new \DateTime();
+                    $date->setTimestamp($rep->data->created);
+                    array_push($replies['replies'], array(
+                        'content' => $this->regStr($rep->data->body),
+                        'author' => $this->regStr($rep->data->author),
+                        'date' => $date->format('Y-m-d')
+                    ));
+                    if($rep->data->replies != NULL && $rep->data->replies !== "")
+                    {
+                        $reps = $this->getRepliesReddit($rep->data->replies);
+                        if($reps['status'])
+                        {
+                            $replies['replies'] = array_merge($replies['replies'], $reps['replies']);
+                        }
+                    }
                 }
             }
         }
-        return $replies;
+        catch(\Exception $e){
+            $replies['status'] = FALSE;
+            $replies['errors'] = "Don't worry, it just seems like there's some error.<br><b>ERROR CODE: ".$e->getMessage()."</b>";
+        }
+        finally{
+            return $replies;
+        }
     }
 
     // YOUTUBE FUNCTIONS
     public function getObjectYoutube($videoid, $title=true, $nextPageToken="")
     {
-        $apikey = "AIzaSyBFactY2wGBHiSQBh4pjw1Im2uuXx3Qoaw";
+        $apikey = env('YOUTUBE_API_KEY');
         $result = array();
         try{
             // REQUEST ON COMMENT THREADS
@@ -404,14 +474,9 @@ class WebCrawlerController extends Controller
             }
             $result['success'] = TRUE;
         }
-        catch (\RuntimeException $e){
-            $result['success'] = FALSE;
-            $result['errors'] = "Don't worry, it just seems like there's some error.\nERROR CODE: Runtime Error || GET Object Youtube";
-        }
         catch (\Exception $e){
             $result['success'] = FALSE;
-            $result['errors'] = "Don't worry, it just seems like there's some error.\nERROR CODE: Exception Error || GET Object Youtube";
-            //$result['errors'] = "URL : https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=".$videoid."key=".$apikey;
+            $result['errors'] = "Don't worry, it just seems like there's some error.<br><b>ERROR CODE: ".$e->getMessage()."</b>";
         }
         finally{
             return $result;
@@ -521,6 +586,27 @@ class WebCrawlerController extends Controller
                 'result_type' => 'mixed',
                 'lang' => 'en',
             ]);
+        }
+        catch (\RuntimeException $e){
+            $result['success'] = FALSE;
+            $result['errors'] = "Don't worry, it just seems like there's some error.\nERROR CODE: Runtime Error";
+        }
+        catch (\Exception $e){
+            $result['success'] = FALSE;
+            $result['errors'] = "Don't worry, it just seems like there's some error.\nERROR CODE: Exception Error";
+        }
+        finally{
+            return $result;
+        }
+    }
+
+    // DISCUSSION API FUNCTIONS
+    public function getObjectDissBot($link){
+        $result = array();
+        $token = env('DIFFBOT_API_KEY');
+        try{
+            $result['success'] = TRUE;
+            $result['object'] = file_get_contents("https://api.diffbot.com/v3/discussion?token=".$token."&url=".urlencode($link));
         }
         catch (\RuntimeException $e){
             $result['success'] = FALSE;

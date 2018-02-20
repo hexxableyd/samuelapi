@@ -67,7 +67,7 @@
     <div class="wrapper">
         <header class="main-header">
             <nav class="navbar navbar-static-top">
-                <a href="/linkifier" class="logo">
+                <a href="{{ url('/linkifier') }}" class="logo">
                     <span class="logo-lg"><span class="fa fa-arrow-circle-left"></span> Return to <b>LINKIFY</b></span>
                 </a>
                 <div class="navbar-custom-menu">
@@ -338,12 +338,6 @@
             }
         @endif
 
-    //   TODO: GG result ng samuel
-        var Samuel = [];
-        {{--var corpus = [];--}}
-        {{--@foreach($corpus as $object)--}}
-                {{--corpus.push("{{$object}}");--}}
-        {{--@endforeach--}}
         var start_time = new Date().getTime();
         data = {
             'text':"{{$corpus}}",
@@ -352,18 +346,14 @@
             'dashboard_style': false
         };
         $.ajax({
-            url: "{{ config('app.samuel_core') }}" +
-            "?KEY=nipMZqCFGgJcnWsE1vpIjcNdzkyOVyoZjdE2Eu5e",
+            url: "{{ config('app.samuel_core') }}" + "?KEY={{ config('app.samuel_api_ip') }}",
             type: 'POST',
             data: JSON.stringify(data),
             contentType:"application/json",
             success:function(samuel) {
-                // console.log(samuel);
-                
                 // REQUEST TIME
                 var request_time = new Date().getTime() - start_time;
                 $('#response-time').html("It took <b>"+(request_time/1000)+"<b> seconds to process your request.");
-                // console.log(request_time)1;
 
                 // CORPUS SUMMARY
                 $("#corpus-summary").html(samuel.summarized_text);
@@ -375,7 +365,7 @@
                 var varpositive = parseFloat(samuel.percentage.positive.replace(/\D/g,''))/100.0;
                 var varnegative = parseFloat(samuel.percentage.negative.replace(/\D/g,''))/100.0;
                 var varneutral = parseFloat(samuel.percentage.neutral.replace(/\D/g,''))/100.0;
-                var donut = new Morris.Donut({
+                new Morris.Donut({
                     element: 'sales-chart',
                     resize: true,
                     colors: ["#12cc4a", "#cc1212", "#595959"],
@@ -388,9 +378,7 @@
                 });
 
                 // DASHBOARD
-                // console.log(samuel.dashboard);
                 $("#corpus-dashboard").html(samuel.dashboard);
-
                 if (samuel.polarity==="positive") {
                     $("#corpus-polarity").html("&nbsp;"+samuel.percentage.positive+"&nbsp;<i class='fa fa-smile-o' aria-hidden='true'></i> &nbsp;Positive").addClass("text text-success");
                 }

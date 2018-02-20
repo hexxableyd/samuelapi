@@ -70,7 +70,7 @@
                     <a class="btn-danger btn center-block" href="{{url('/linkifier')}}">TRY IT NOW !</a>
                 </div>
                 <div class="col-md-2 midimage">
-                    <img class="img-responsive hidden-sm img-normalizer" src="{{asset('img/mid-img.jpg')}}" alt="">
+                    <img class=" img-responsive hidden-sm img-normalizer" src="{{asset('img/mid-img.jpg')}}" alt="">
                     <div class="overlay"></div>
                 </div>
                 <div class="col-md-5 introduction">

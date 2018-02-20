@@ -77,7 +77,8 @@ class LinkifierController extends Controller
             );
             $corpus = "";
 //            $corpus = array();
-            if($data['type'] === 'reddit' || $data['type'] === 'youtube' || $data['type'] === 'forum.philboxing' || $data['type'] === 'twitter')
+
+            if($data['type'] === 'reddit' || $data['type'] === 'youtube' || $data['type'] === 'forum.philboxing' || $data['type'] === 'forum.generic' || $data['type'] === 'twitter')
             {
                 $crawl = new Crawl();
                 foreach($json_object['replies'] as $reps)

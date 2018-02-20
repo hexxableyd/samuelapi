@@ -230,7 +230,7 @@
                                 if(data.errors){
                                     hideAll();
                                     $('#error-div').show("fast","swing");
-                                    $("#err-msg").text(data.errors);
+                                    $("#err-msg").html(data.errors);
                                 }
                             }else {
                                 hideAll();
@@ -280,6 +280,17 @@
                                     };
                                     $('#url-data').val(JSON.stringify(link_data));
                                     $("#success-img").attr("src","{{asset('/img/ico/twitter.png')}}");
+                                }
+                                else {
+                                    link_data = {
+                                        type: data.website,
+                                        author: data.creator,
+                                        replies: data.replies,
+                                        link: data.link
+                                    };
+                                    $('#url-data').val(JSON.stringify(link_data));
+                                    $("#success-img").attr("src","{{asset('/img/ico/discussion.png')}}");
+                                    // console.log(data);
                                 }
                             }
                         }
