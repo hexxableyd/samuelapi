@@ -299,10 +299,8 @@
                                                         <td>NEUTRAL</td>
                                                         <td>NEGATIVE</td>
                                                     </tr>
-                                                    
                                                 </thead>
                                                 <tbody id="classification-table-body">
-
                                                 </tbody>
                                             </table>
                                         </div>
@@ -375,7 +373,6 @@
             {
                 count /= 2;
             }
-            // count = 10 ? count < 100 : count;
             $('#easyPaginate').easyPaginate({
                 paginateElement: 'section',
                 elementsPerPage: count,
@@ -407,7 +404,7 @@
             'text':"{{$corpus}}",
             'query':"{{$creator['title']}}",
             'summary_length':8,
-            'visualize': true,
+            'visualize': false,
             'dashboard_style': false
         };
         $.ajax({
@@ -431,7 +428,6 @@
                 console.log(samuel);
                 var varpositive = samuel.total_score.percentage.positive;
                 var varnegative = samuel.total_score.percentage.negative;
-                var varneutral = samuel.total_score.percentage.neutral;
 
                 var totalPosNeg = varpositive + varnegative;
                 var finalPos = ((varpositive/totalPosNeg)*100).toFixed(2);
@@ -455,16 +451,6 @@
                     $("#corpus-polarity").html("&nbsp;"+finalNeg+"&nbsp;%<i class='fa fa-frown-o' aria-hidden='true'></i> &nbsp;Negative").addClass("text text-danger");
                 }
 
-                // if (samuel.polarity==="positive") {
-                //     $("#corpus-polarity").html("&nbsp;"+samuel.total_score.percentage.positive+"&nbsp;<i class='fa fa-smile-o' aria-hidden='true'></i> &nbsp;Positive").addClass("text text-success");
-                // }
-                // else if(samuel.polarity==="negative"){
-                //     $("#corpus-polarity").html("&nbsp;"+samuel.total_score.percentage.negative+"&nbsp;<i class='fa fa-frown-o' aria-hidden='true'></i> &nbsp;Negative").addClass("text text-danger");
-                // }
-                // else{
-                //     $("#corpus-polarity").html("&nbsp;"+samuel.total_score.percentage.neutral+"&nbsp;<i class='fa fa-meh-o' aria-hidden='true'></i> &nbsp;Neutral").addClass("text text-primary");
-                // }
-                
                 // DASHBOARD
                 $("#corpus-dashboard").html(samuel.dashboard);
                 
@@ -492,8 +478,7 @@
                     +"<td><b>"+samuel.score[i].neg.toFixed(2)+"</b><br>"+negDescriptors+"</td>"
                     +"</tr>";
                 }
-                $("#classification-table-body").html(classificationTable);
-
+                $("#classification-table-body").html(classificationTable)
 
 
                 clearInterval(interval);
