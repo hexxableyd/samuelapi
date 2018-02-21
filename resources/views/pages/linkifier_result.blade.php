@@ -468,7 +468,7 @@
                 // DASHBOARD
                 $("#corpus-dashboard").html(samuel.dashboard);
                 
-
+                // TEXT CLASSIFICATION
                 $('#box-classification').boxWidget('toggle');
                 var classificationTable = "";
                 for(var i = 0 ; i<samuel.score.length ; i++){
@@ -487,9 +487,9 @@
                     
                     classificationTable += ""
                     +"<tr>"
-                    +"<td><b>"+samuel.score[i].pos+"</b><br>"+posDescriptors+"</td>"
-                    +"<td><b>"+samuel.score[i].neu+"</b><br>"+neuDescriptors+"</td>"
-                    +"<td><b>"+samuel.score[i].neg+"</b><br>"+negDescriptors+"</td>"
+                    +"<td><b>"+samuel.score[i].pos.toFixed(2)+"</b><br>"+posDescriptors+"</td>"
+                    +"<td><b>"+samuel.score[i].neu.toFixed(2)+"</b><br>"+neuDescriptors+"</td>"
+                    +"<td><b>"+samuel.score[i].neg.toFixed(2)+"</b><br>"+negDescriptors+"</td>"
                     +"</tr>";
                 }
                 $("#classification-table-body").html(classificationTable);
